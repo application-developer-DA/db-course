@@ -13,8 +13,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    authorizationform.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    authorizationform.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    authorizationform.ui
+
+QMAKE_CXXFLAGS += -std=c++11
