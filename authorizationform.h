@@ -17,7 +17,7 @@ public:
 
     struct AuthData {
         QString hostname;
-        QString login;
+        QString username;
         QString password;
     };
 

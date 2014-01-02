@@ -31,11 +31,14 @@ void MainWindow::on_action_Exit_triggered()
 
 void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
 {
-    QString hostname = QString("Driver={SQL Server};Server=%1;Database=%2;User Id=%3;Password=%4;")
+    qDebug() << authData.hostname << authData.username << authData.password;
+
+    QString hostname = QString("Driver={SQL Server};Server=%1;Database=%2;")
             .arg(authData.hostname)
-            .arg("SportInfrastructure")
-            .arg(authData.login)
-            .arg(authData.password);
+            .arg("SportInfrastructure");
+    m_db.setConnectOptions();
+    m_db.setUserName(authData.username);
+    m_db.setPassword(authData.password);
     m_db.setDatabaseName(hostname);
 
     if (!m_db.open()) {
@@ -45,7 +48,7 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
     }
 
     ui->stackedWidget->setCurrentWidget(m_tabWindow);
-    m_tabWindow->loggedIn(authData.login);
+    m_tabWindow->loggedIn(authData.username);
 }
 
 void MainWindow::onLogout()
