@@ -156,6 +156,12 @@ void MainTabWindow::fillSportsmen()
     ui->startDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
     ui->endDateEdit->setCalendarPopup(true);
     ui->endDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+
+    QButtonGroup* buttonGroup = new QButtonGroup(this);
+    buttonGroup->addButton(ui->sportFilterCheckbox);
+    buttonGroup->addButton(ui->qualificationFilterCheckbox);
+    buttonGroup->addButton(ui->coachFilterCheckbox);
+    buttonGroup->addButton(ui->competitionsFilterCheckbox);
 }
 
 void MainTabWindow::updateSportCoachesView()
@@ -180,4 +186,25 @@ void MainTabWindow::updateSportsmanCoachesView()
                                         .arg(record.value(SportsmanWithSports_Firstname).toString())
                                         .arg(record.value(SportsmanWithSports_Lastname).toString()));
     }
+}
+
+void MainTabWindow::on_sportFilterCheckbox_stateChanged(int state)
+{
+    ui->sportComboBox->setEnabled(state);
+}
+
+void MainTabWindow::on_qualificationFilterCheckbox_stateChanged(int state)
+{
+    ui->qualificationComboBox->setEnabled(state);
+}
+
+void MainTabWindow::on_coachFilterCheckbox_stateChanged(int state)
+{
+    ui->coachFilterComboBox->setEnabled(state);
+}
+
+void MainTabWindow::on_competitionsFilterCheckbox_stateChanged(int state)
+{
+    ui->startDateEdit->setEnabled(state);
+    ui->endDateEdit->setEnabled(state);
 }

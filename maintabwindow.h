@@ -25,6 +25,11 @@ private slots:
     void updateSportCoachesView();
     void updateSportsmanCoachesView();
 
+    void on_sportFilterCheckbox_stateChanged(int state);
+    void on_qualificationFilterCheckbox_stateChanged(int state);
+    void on_coachFilterCheckbox_stateChanged(int state);
+    void on_competitionsFilterCheckbox_stateChanged(int state);
+
 private:
     /* Tabs filling functions */
     void fillSports();                      // Configure 1 tab

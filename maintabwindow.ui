@@ -134,7 +134,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="sportComboBox"/>
+             <widget class="QComboBox" name="sportComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -161,7 +165,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="qualificationComboBox"/>
+             <widget class="QComboBox" name="qualificationComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -188,7 +196,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="coachFilterComboBox"/>
+             <widget class="QComboBox" name="coachFilterComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -225,7 +237,11 @@ in competitions</string>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QDateEdit" name="startDateEdit"/>
+               <widget class="QDateEdit" name="startDateEdit">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_4">
@@ -235,7 +251,11 @@ in competitions</string>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QDateEdit" name="endDateEdit"/>
+               <widget class="QDateEdit" name="endDateEdit">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
