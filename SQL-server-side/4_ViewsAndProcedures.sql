@@ -112,7 +112,14 @@ as
 	select * from SportsmenWithCoaches 
 	where 
 		SportsmenWithCoaches.[Coach Firstname] = @firstname
-		and SportsmenWithCoaches.[Coach Lastname ]= @lastname
+		and SportsmenWithCoaches.[Coach Lastname ] = @lastname
+go
+
+/* Sportsmen who has qualification */
+create procedure SportsmenWithQualification
+	@sportTitle as varchar(30)
+as
+	select * from SportsmenWithSports where SportsmenWithSports.Title = @sportTitle
 go
 
 /* Sportsmen who study more than one sports */

@@ -27,7 +27,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSports">
       <attribute name="title">
@@ -124,25 +124,20 @@
           <string>Filters:</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_6">
-            <item>
-             <widget class="QCheckBox" name="sportFilterCheckbox">
-              <property name="text">
-               <string>Filter by sport</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="sportComboBox">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="7" column="0">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>29</height>
+             </size>
+            </property>
+           </spacer>
           </item>
-          <item row="1" column="0">
+          <item row="3" column="0">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -150,30 +145,12 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>63</height>
+              <height>29</height>
              </size>
             </property>
            </spacer>
           </item>
-          <item row="2" column="0">
-           <layout class="QVBoxLayout" name="verticalLayout_5">
-            <item>
-             <widget class="QCheckBox" name="qualificationFilterCheckbox">
-              <property name="text">
-               <string>Filter by qualification</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="qualificationComboBox">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0">
+          <item row="5" column="0">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -181,12 +158,27 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>63</height>
+              <height>28</height>
              </size>
             </property>
            </spacer>
           </item>
-          <item row="4" column="0">
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="multipleSportsFilterCheckbox">
+            <property name="text">
+             <string>Those who study multiple
+ sports</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QPushButton" name="sportsmenResetFilters">
+            <property name="text">
+             <string>Reset Filters</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
              <widget class="QCheckBox" name="coachFilterCheckbox">
@@ -204,20 +196,7 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="0">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>63</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="0">
+          <item row="8" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
              <widget class="QCheckBox" name="competitionsFilterCheckbox">
@@ -260,6 +239,55 @@ in competitions</string>
              </layout>
             </item>
            </layout>
+          </item>
+          <item row="4" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QCheckBox" name="qualificationFilterCheckbox">
+              <property name="text">
+               <string>Filter by qualification</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="qualificationComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item>
+             <widget class="QCheckBox" name="sportFilterCheckbox">
+              <property name="text">
+               <string>Filter by sport</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="sportComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>26</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>

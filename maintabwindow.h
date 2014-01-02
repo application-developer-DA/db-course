@@ -29,6 +29,14 @@ private slots:
     void on_qualificationFilterCheckbox_stateChanged(int state);
     void on_coachFilterCheckbox_stateChanged(int state);
     void on_competitionsFilterCheckbox_stateChanged(int state);
+    void on_multipleSportsFilterCheckbox_stateChanged(int state);
+
+    void applySportFilter();
+    void applyQualificationFilter();
+    void applyCoachFilter();
+    void applyDateFilter();
+
+    void on_sportsmenResetFilters_clicked();
 
 private:
     /* Tabs filling functions */
@@ -43,5 +51,8 @@ private:
     QSqlQueryModel* coachesModel;
     QSqlQueryModel* sportsmenModel;
     QSqlQueryModel* sportsmanCoachesModel;
+
+    /* Auxiliary models */
+    QSqlQueryModel* allCoaches;
 };
 

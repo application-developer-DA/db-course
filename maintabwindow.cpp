@@ -35,6 +35,7 @@ MainTabWindow::MainTabWindow(QWidget* parent)
     , coachesModel(nullptr)
     , sportsmenModel(nullptr)
     , sportsmanCoachesModel(nullptr)
+    , allCoaches(nullptr)
 {
     ui->setupUi(this);
 }
@@ -140,28 +141,34 @@ void MainTabWindow::fillSportsmen()
 
     ui->sportComboBox->setModel(sportsModel);
     ui->sportComboBox->setModelColumn(Sport_Name);
+    connect(ui->sportComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applySportFilter()));
 
     QSqlQueryModel* experienceModel = new QSqlQueryModel(this);
     experienceModel->setQuery("SELECT title FROM Experience GROUP BY title");
     ui->qualificationComboBox->setModel(experienceModel);
     ui->qualificationComboBox->setModelColumn(0);
+    connect(ui->qualificationComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applyQualificationFilter()));
 
-    QSqlQueryModel* allCoaches = new QSqlQueryModel(this);
-    allCoaches->setQuery("SELECT DISTINCT [CoachId], [Coach Lastname] FROM SportsmenWithCoaches");
+    allCoaches = new QSqlQueryModel(this);
+    allCoaches->setQuery("SELECT DISTINCT [CoachId], [Coach Firstname], [Coach Lastname] FROM SportsmenWithCoaches");
     ui->coachFilterComboBox->setModel(allCoaches);
-    ui->coachFilterComboBox->setModelColumn(1);
+    ui->coachFilterComboBox->setModelColumn(2);
+    connect(ui->coachFilterComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applyCoachFilter()));
 
     QDate today = QDate::currentDate();
     ui->startDateEdit->setCalendarPopup(true);
     ui->startDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
     ui->endDateEdit->setCalendarPopup(true);
     ui->endDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    connect(ui->startDateEdit, SIGNAL(dateChanged(QDate)), SLOT(applyDateFilter()));
+    connect(ui->endDateEdit, SIGNAL(dateChanged(QDate)), SLOT(applyDateFilter()));
 
     QButtonGroup* buttonGroup = new QButtonGroup(this);
     buttonGroup->addButton(ui->sportFilterCheckbox);
     buttonGroup->addButton(ui->qualificationFilterCheckbox);
     buttonGroup->addButton(ui->coachFilterCheckbox);
     buttonGroup->addButton(ui->competitionsFilterCheckbox);
+    buttonGroup->addButton(ui->multipleSportsFilterCheckbox);
 }
 
 void MainTabWindow::updateSportCoachesView()
@@ -188,6 +195,36 @@ void MainTabWindow::updateSportsmanCoachesView()
     }
 }
 
+void MainTabWindow::applySportFilter()
+{
+    QString sportName = ui->sportComboBox->currentText();
+    sportsmenModel->setQuery(QString("EXEC SportsmenWithParticularSport @sportName = %1").arg(sportName));
+}
+
+void MainTabWindow::applyCoachFilter()
+{
+    int row = ui->coachFilterComboBox->currentIndex();
+    QString firstname = allCoaches->record(row).value(1).toString();
+    QString lastname = allCoaches->record(row).value(2).toString();
+    sportsmenModel->setQuery(QString("EXEC SportsmenOfCoach @firstname = %1, @lastname = %2").arg(firstname).arg(lastname));
+}
+
+void MainTabWindow::applyQualificationFilter()
+{
+    QString title = ui->qualificationComboBox->currentText();
+    sportsmenModel->setQuery(QString("EXEC SportsmenWithQualification @sportTitle = %1").arg(title));
+}
+
+void MainTabWindow::applyDateFilter()
+{
+    QDate startDate = ui->startDateEdit->date();
+    QDate endDate = ui->endDateEdit->date();
+    sportsmenModel->setQuery(QString("EXEC ThoseWhoDidntTakePartInCompetitions @from = %1, @to = %2")
+                             .arg(startDate.toString("yyyy-MM-dd"))
+                             .arg(endDate.toString("yyyy-MM-dd")));
+
+}
+
 void MainTabWindow::on_sportFilterCheckbox_stateChanged(int state)
 {
     ui->sportComboBox->setEnabled(state);
@@ -207,4 +244,20 @@ void MainTabWindow::on_competitionsFilterCheckbox_stateChanged(int state)
 {
     ui->startDateEdit->setEnabled(state);
     ui->endDateEdit->setEnabled(state);
+}
+
+void MainTabWindow::on_sportsmenResetFilters_clicked()
+{
+    ui->sportFilterCheckbox->setChecked(false);
+    ui->coachFilterCheckbox->setChecked(false);
+    ui->competitionsFilterCheckbox->setChecked(false);
+    ui->qualificationFilterCheckbox->setChecked(false);
+    ui->multipleSportsFilterCheckbox->setChecked(false);
+    sportsmenModel->setQuery("SELECT DISTINCT * FROM SportsmenWithSports");
+}
+
+void MainTabWindow::on_multipleSportsFilterCheckbox_stateChanged(int state)
+{
+    if (state == Qt::Checked)
+        sportsmenModel->setQuery("EXEC ThoseWhoStudyMoreThanOneSport");
 }
