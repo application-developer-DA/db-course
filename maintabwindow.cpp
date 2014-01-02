@@ -16,9 +16,25 @@ enum {
     SportCoach_MiddleName
 };
 
+enum {
+    SportsmanWithSports_Id,
+    SportsmanWithSports_Firstname,
+    SportsmanWithSports_Lastname,
+    SportsmanWithSports_Middlename,
+    SportsmanWithSports_Birthdate,
+    SportsmanWithSports_SportId,
+    SportsmanWithSports_Sport,
+    SportsmanWithSports_ExperienceId,
+    SportsmanWithSports_Title
+};
+
 MainTabWindow::MainTabWindow(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::MainTabWindow)
+    , sportsModel(nullptr)
+    , coachesModel(nullptr)
+    , sportsmenModel(nullptr)
+    , sportsmanCoachesModel(nullptr)
 {
     ui->setupUi(this);
 }
@@ -34,6 +50,8 @@ void MainTabWindow::loggedIn(const QString& username)
 
     fillSports();
     ui->sportsView->setCurrentIndex(sportsModel->index(0, 0));
+
+    fillSportsmen();
 }
 
 void MainTabWindow::on_addSportBtn_clicked()
@@ -95,6 +113,51 @@ void MainTabWindow::fillSports()
     ui->coachesView->horizontalHeader()->setStretchLastSection(true);
 }
 
+void MainTabWindow::fillSportsmen()
+{
+    sportsmenModel = new QSqlQueryModel(this);
+    sportsmenModel->setQuery("SELECT DISTINCT * FROM SportsmenWithSports");
+
+    ui->sportsmenView->setModel(sportsmenModel);
+    ui->sportsmenView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->sportsmenView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->sportsmenView->setColumnHidden(SportsmanWithSports_Id, true);
+    for (int i = SportsmanWithSports_SportId; i <= SportsmanWithSports_Title; ++i)
+        ui->sportsmenView->setColumnHidden(i, true);
+    ui->sportsmenView->resizeColumnsToContents();
+    ui->sportsmenView->horizontalHeader()->setStretchLastSection(true);
+
+    connect(ui->sportsmenView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            SLOT(updateSportsmanCoachesView()));
+
+    sportsmanCoachesModel = new QSqlQueryModel();
+    sportsmanCoachesModel->setQuery("SELECT DISTINCT [Coach Firstname], [Coach Lastname] FROM SportsmenWithCoaches");
+    ui->sportsmanCoachesView->setModel(sportsmanCoachesModel);
+    ui->sportsmanCoachesView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->sportsmanCoachesView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->sportsmanCoachesView->resizeColumnsToContents();
+    ui->sportsmanCoachesView->horizontalHeader()->setStretchLastSection(true);
+
+    ui->sportComboBox->setModel(sportsModel);
+    ui->sportComboBox->setModelColumn(Sport_Name);
+
+    QSqlQueryModel* experienceModel = new QSqlQueryModel(this);
+    experienceModel->setQuery("SELECT title FROM Experience GROUP BY title");
+    ui->qualificationComboBox->setModel(experienceModel);
+    ui->qualificationComboBox->setModelColumn(0);
+
+    QSqlQueryModel* allCoaches = new QSqlQueryModel(this);
+    allCoaches->setQuery("SELECT DISTINCT [CoachId], [Coach Lastname] FROM SportsmenWithCoaches");
+    ui->coachFilterComboBox->setModel(allCoaches);
+    ui->coachFilterComboBox->setModelColumn(1);
+
+    QDate today = QDate::currentDate();
+    ui->startDateEdit->setCalendarPopup(true);
+    ui->startDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    ui->endDateEdit->setCalendarPopup(true);
+    ui->endDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+}
+
 void MainTabWindow::updateSportCoachesView()
 {
     QModelIndex index = ui->sportsView->currentIndex();
@@ -102,7 +165,19 @@ void MainTabWindow::updateSportCoachesView()
         QSqlRecord record = sportsModel->record(index.row());
         QString sportName = record.value(Sport_Name).toString();
 
-        coachesModel->setQuery(QString("EXEC CoachesSport @sportName = %1").arg(sportName));
+        coachesModel->setQuery(QString("EXEC CoachesOfSportsman @sportName = %1").arg(sportName));
         ui->coachesView->setColumnHidden(SportCoach_Id, true);
+    }
+}
+
+void MainTabWindow::updateSportsmanCoachesView()
+{
+    QModelIndex index = ui->sportsmenView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = sportsmenModel->record(index.row());
+
+        sportsmanCoachesModel->setQuery(QString("EXEC CoachesOfSportsman @firstname = %1, @lastname = %2")
+                                        .arg(record.value(SportsmanWithSports_Firstname).toString())
+                                        .arg(record.value(SportsmanWithSports_Lastname).toString()));
     }
 }

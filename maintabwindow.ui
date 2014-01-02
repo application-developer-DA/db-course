@@ -181,14 +181,14 @@
           <item row="4" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QCheckBox" name="coachFilterCheckbox_2">
+             <widget class="QCheckBox" name="coachFilterCheckbox">
               <property name="text">
                <string>Filter by coach</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="coachFilterCheckbox"/>
+             <widget class="QComboBox" name="coachFilterComboBox"/>
             </item>
            </layout>
           </item>
@@ -225,7 +225,7 @@ in competitions</string>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QDateEdit" name="dateEdit"/>
+               <widget class="QDateEdit" name="startDateEdit"/>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_4">
@@ -235,7 +235,7 @@ in competitions</string>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QDateEdit" name="dateEdit_2"/>
+               <widget class="QDateEdit" name="endDateEdit"/>
               </item>
              </layout>
             </item>
@@ -254,7 +254,7 @@ in competitions</string>
           </widget>
          </item>
          <item>
-          <widget class="QTableView" name="tableView"/>
+          <widget class="QTableView" name="sportsmenView"/>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -292,7 +292,7 @@ in competitions</string>
           </widget>
          </item>
          <item>
-          <widget class="QTableView" name="tableView_2"/>
+          <widget class="QTableView" name="sportsmanCoachesView"/>
          </item>
         </layout>
        </item>

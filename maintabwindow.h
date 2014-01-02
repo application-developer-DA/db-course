@@ -23,6 +23,7 @@ private slots:
     void on_deleteSportBtn_clicked();
 
     void updateSportCoachesView();
+    void updateSportsmanCoachesView();
 
 private:
     /* Tabs filling functions */
@@ -31,9 +32,11 @@ private:
     void fillBuildingAndOrganizations();    // Configure 3 tab
     void fillCompetitions();                // Configure 4 tab
 
+    Ui::MainTabWindow* ui;
+
     QSqlTableModel* sportsModel;
     QSqlQueryModel* coachesModel;
-
-    Ui::MainTabWindow* ui;
+    QSqlQueryModel* sportsmenModel;
+    QSqlQueryModel* sportsmanCoachesModel;
 };
 
