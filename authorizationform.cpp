@@ -6,6 +6,7 @@ AuthorizationForm::AuthorizationForm(QWidget* parent)
     , ui(new Ui::AuthorizationForm)
 {
     ui->setupUi(this);
+    ui->hostnameEdit->setText("Daniel-PC\\SQLEXPRESS");
 }
 
 AuthorizationForm::~AuthorizationForm()

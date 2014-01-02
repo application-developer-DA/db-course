@@ -45,7 +45,7 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
     }
 
     ui->stackedWidget->setCurrentWidget(m_tabWindow);
-    m_tabWindow->setUsername(authData.login);
+    m_tabWindow->loggedIn(authData.login);
 }
 
 void MainWindow::onLogout()

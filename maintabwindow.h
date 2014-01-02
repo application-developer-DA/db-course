@@ -6,6 +6,9 @@ namespace Ui {
 class MainTabWindow;
 }
 
+class QSqlTableModel;
+class QSqlQueryModel;
+
 class MainTabWindow : public QWidget
 {
     Q_OBJECT
@@ -13,7 +16,7 @@ public:
     explicit MainTabWindow(QWidget* parent = nullptr);
     ~MainTabWindow();
 
-    void setUsername(const QString& username);
+    void loggedIn(const QString& username);
 
 signals:
     void logout();
@@ -21,7 +24,18 @@ signals:
 private slots:
     void on_disconnectButton_clicked();
 
+    void updateCoachesToSportView();
+
 private:
+    /* Tabs filling functions */
+    void fillSports();                      // Configure 1 tab
+    void fillSportsmen();                   // Configure 2 tab
+    void fillBuildingAndOrganizations();    // Configure 3 tab
+    void fillCompetitions();                // Configure 4 tab
+
+    QSqlTableModel* sportsModel;
+    QSqlQueryModel* coachesModel;
+
     Ui::MainTabWindow* ui;
 };
 

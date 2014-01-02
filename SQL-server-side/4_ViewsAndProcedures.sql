@@ -193,6 +193,7 @@ create procedure CoachesSport
 	@sportName as varchar(30)
 as
 	select distinct
+		SportsmenWithCoaches.[CoachId],
 		SportsmenWithCoaches.[Coach Firstname],
 		SportsmenWithCoaches.[Coach Lastname ],
 		SportsmenWithCoaches.[Coach Middlename]
