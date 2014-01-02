@@ -23,6 +23,8 @@ signals:
 
 private slots:
     void on_disconnectButton_clicked();
+    void on_addSportBtn_clicked();
+    void on_deleteSportBtn_clicked();
 
     void updateCoachesToSportView();
 

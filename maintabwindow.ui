@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
-    <height>557</height>
+    <width>787</width>
+    <height>645</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,36 +40,85 @@
       <attribute name="title">
        <string>Sports</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QLabel" name="labelSports">
-           <property name="text">
-            <string>Available sports:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTableView" name="sportsView"/>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QLabel" name="coachesLabel">
-           <property name="text">
-            <string>Coaches for selected sports:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTableView" name="coachesView"/>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>280</y>
+         <width>701</width>
+         <height>213</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QLabel" name="coachesLabel">
+          <property name="text">
+           <string>Coaches for selected sports:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="coachesView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>704</width>
+         <height>246</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="labelSports">
+            <property name="text">
+             <string>Available sports:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="sportsView"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>538</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="addSportBtn">
+            <property name="text">
+             <string>Add Sport</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteSportBtn">
+            <property name="text">
+             <string>Delete Sport</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
