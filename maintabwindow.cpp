@@ -59,22 +59,17 @@ void MainTabWindow::on_deleteSportBtn_clicked()
     QSqlDatabase::database().transaction();
     QSqlRecord record = sportsModel->record(index.row());
     QString name = record.value(Sport_Name).toString();
-    int id = record.value(Sport_Id).toInt();
     int r = QMessageBox::warning(this, tr("Delete Sport"), tr("Delete %1 and all connected tables?").arg(name),
                                  QMessageBox::Yes | QMessageBox::No);
     if (r == QMessageBox::No) {
         QSqlDatabase::database().rollback();
         return;
     }
-
-    QSqlQuery query(QString("DELETE FROM Sport WHERE sport_id = %1").arg(id));
-    query.exec();
-
     sportsModel->removeRow(index.row());
     sportsModel->submitAll();
     QSqlDatabase::database().commit();
 
-    updateCoachesToSportView();
+    updateSportCoachesView();
     ui->sportsView->setFocus();
 }
 
@@ -93,7 +88,7 @@ void MainTabWindow::fillSports()
     ui->sportsView->horizontalHeader()->setStretchLastSection(true);
 
     connect(ui->sportsView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
-            SLOT(updateCoachesToSportView()));
+            SLOT(updateSportCoachesView()));
 
     coachesModel = new QSqlQueryModel(this);
     ui->coachesView->setModel(coachesModel);
@@ -105,7 +100,7 @@ void MainTabWindow::fillSports()
     ui->coachesView->horizontalHeader()->setStretchLastSection(true);
 }
 
-void MainTabWindow::updateCoachesToSportView()
+void MainTabWindow::updateSportCoachesView()
 {
     QModelIndex index = ui->sportsView->currentIndex();
     if (index.isValid()) {

@@ -26,7 +26,7 @@ private slots:
     void on_addSportBtn_clicked();
     void on_deleteSportBtn_clicked();
 
-    void updateCoachesToSportView();
+    void updateSportCoachesView();
 
 private:
     /* Tabs filling functions */

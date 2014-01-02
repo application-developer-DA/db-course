@@ -34,7 +34,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabSports">
       <attribute name="title">
@@ -124,6 +124,19 @@
       <attribute name="title">
        <string>Sportsmen</string>
       </attribute>
+      <widget class="QGroupBox" name="sportsmenFilters">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>161</width>
+         <height>261</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Filters:</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tabBuildlingOrganizations">
       <attribute name="title">
