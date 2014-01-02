@@ -1,13 +1,12 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
+
+#include "authorizationform.h"
 
 #include <QMainWindow>
 
 namespace Ui {
 class MainWindow;
 }
-
-class AuthorizationForm;
 
 class MainWindow : public QMainWindow
 {
@@ -20,10 +19,10 @@ public:
 private slots:
     void on_action_Exit_triggered();
 
+    void onAuthorization(const AuthorizationForm::AuthData& authData);
+
 private:
     Ui::MainWindow* ui;
 
     AuthorizationForm* m_authorizationWidget;
 };
-
-#endif // MAINWINDOW_H

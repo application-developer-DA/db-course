@@ -12,3 +12,13 @@ AuthorizationForm::~AuthorizationForm()
 {
     delete ui;
 }
+
+void AuthorizationForm::on_loginButton_clicked()
+{
+    QString host = ui->hostnameEdit->text();
+    QString login = ui->loginEdit->text();
+    QString password = ui->passwordEdit->text();
+
+    AuthData authData = { host, login, password };
+    emit authorization(authData);
+}

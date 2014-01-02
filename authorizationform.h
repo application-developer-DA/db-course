@@ -1,5 +1,4 @@
-#ifndef AUTHORIZATIONFORM_H
-#define AUTHORIZATIONFORM_H
+#pragma once
 
 #include <QWidget>
 
@@ -10,13 +9,23 @@ class AuthorizationForm;
 class AuthorizationForm : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit AuthorizationForm(QWidget* parent = nullptr);
     ~AuthorizationForm();
+
+    struct AuthData {
+        QString hostname;
+        QString login;
+        QString password;
+    };
+
+signals:
+    void authorization(const AuthorizationForm::AuthData& authData);
+
+private slots:
+    void on_loginButton_clicked();
 
 private:
     Ui::AuthorizationForm* ui;
 };
 
-#endif // AUTHORIZATIONFORM_H
