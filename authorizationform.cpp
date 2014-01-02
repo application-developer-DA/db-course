@@ -13,6 +13,13 @@ AuthorizationForm::~AuthorizationForm()
     delete ui;
 }
 
+void AuthorizationForm::resetAuthData()
+{
+    ui->hostnameEdit->setText("");
+    ui->loginEdit->setText("");
+    ui->passwordEdit->setText("");
+}
+
 void AuthorizationForm::on_loginButton_clicked()
 {
     QString host = ui->hostnameEdit->text();

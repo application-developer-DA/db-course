@@ -13,6 +13,8 @@ public:
     explicit AuthorizationForm(QWidget* parent = nullptr);
     ~AuthorizationForm();
 
+    void resetAuthData();
+
     struct AuthData {
         QString hostname;
         QString login;
