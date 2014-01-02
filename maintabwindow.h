@@ -13,6 +13,8 @@ public:
     explicit MainTabWindow(QWidget* parent = nullptr);
     ~MainTabWindow();
 
+    void setUsername(const QString& username);
+
 signals:
     void logout();
 
