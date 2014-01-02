@@ -12,3 +12,8 @@ MainTabWindow::~MainTabWindow()
 {
     delete ui;
 }
+
+void MainTabWindow::on_disconnectButton_clicked()
+{
+    emit logout();
+}

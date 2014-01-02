@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget* parent)
     ui->stackedWidget->setCurrentWidget(m_authorizationWindow);
 
     connect(m_authorizationWindow, SIGNAL(authorization(AuthorizationForm::AuthData)), SLOT(onLogin(AuthorizationForm::AuthData)));
+    connect(m_tabWindow, SIGNAL(logout()), SLOT(onLogout()));
 }
 
 MainWindow::~MainWindow()
