@@ -36,11 +36,6 @@ void MainTabWindow::loggedIn(const QString& username)
     ui->sportsView->setCurrentIndex(sportsModel->index(0, 0));
 }
 
-void MainTabWindow::on_disconnectButton_clicked()
-{
-    emit logout();
-}
-
 void MainTabWindow::on_addSportBtn_clicked()
 {
     int row = sportsModel->rowCount();

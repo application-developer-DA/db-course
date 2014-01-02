@@ -19,9 +19,9 @@ public:
 
 private slots:
     void on_action_Exit_triggered();
+    void on_actionLogout_triggered();
 
     void onLogin(const AuthorizationForm::AuthData& authData);
-    void onLogout();
 
 private:
     Ui::MainWindow* ui;

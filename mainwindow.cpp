@@ -16,17 +16,11 @@ MainWindow::MainWindow(QWidget* parent)
     ui->stackedWidget->setCurrentWidget(m_authorizationWindow);
 
     connect(m_authorizationWindow, SIGNAL(authorization(AuthorizationForm::AuthData)), SLOT(onLogin(AuthorizationForm::AuthData)));
-    connect(m_tabWindow, SIGNAL(logout()), SLOT(onLogout()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::on_action_Exit_triggered()
-{
-    QApplication::quit();
 }
 
 void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
@@ -51,9 +45,15 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
     m_tabWindow->loggedIn(authData.username);
 }
 
-void MainWindow::onLogout()
+void MainWindow::on_action_Exit_triggered()
 {
-    m_db.close();
+    QApplication::quit();
+}
+
+void MainWindow::on_actionLogout_triggered()
+{
+    if (m_db.isOpen())
+        m_db.close();
     m_authorizationWindow->resetAuthData();
     ui->stackedWidget->setCurrentWidget(m_authorizationWindow);
 }
