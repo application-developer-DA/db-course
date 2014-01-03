@@ -10,13 +10,6 @@ enum {
 };
 
 enum {
-    SportCoach_Id,
-    SportCoach_FirstName,
-    SportCoach_LastName,
-    SportCoach_MiddleName
-};
-
-enum {
     SportsmanWithSports_Id,
     SportsmanWithSports_Firstname,
     SportsmanWithSports_Lastname,
@@ -98,7 +91,6 @@ void MainTabWindow::fillSports()
     ui->sportsView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->sportsView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->sportsView->setColumnHidden(Sport_Id, true);
-    ui->sportsView->resizeColumnsToContents();
     ui->sportsView->horizontalHeader()->setStretchLastSection(true);
 
     connect(ui->sportsView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -109,8 +101,6 @@ void MainTabWindow::fillSports()
     ui->coachesView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->coachesView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->coachesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->coachesView->setColumnHidden(SportCoach_Id, true);
-    ui->coachesView->resizeColumnsToContents();
     ui->coachesView->horizontalHeader()->setStretchLastSection(true);
 }
 
@@ -125,7 +115,6 @@ void MainTabWindow::fillSportsmen()
     ui->sportsmenView->setColumnHidden(SportsmanWithSports_Id, true);
     for (int i = SportsmanWithSports_SportId; i <= SportsmanWithSports_Title; ++i)
         ui->sportsmenView->setColumnHidden(i, true);
-    ui->sportsmenView->resizeColumnsToContents();
     ui->sportsmenView->horizontalHeader()->setStretchLastSection(true);
 
     connect(ui->sportsmenView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
@@ -136,7 +125,6 @@ void MainTabWindow::fillSportsmen()
     ui->sportsmanCoachesView->setModel(sportsmanCoachesModel);
     ui->sportsmanCoachesView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->sportsmanCoachesView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->sportsmanCoachesView->resizeColumnsToContents();
     ui->sportsmanCoachesView->horizontalHeader()->setStretchLastSection(true);
 
     ui->sportComboBox->setModel(sportsModel);
@@ -178,8 +166,7 @@ void MainTabWindow::updateSportCoachesView()
         QSqlRecord record = sportsModel->record(index.row());
         QString sportName = record.value(Sport_Name).toString();
 
-        coachesModel->setQuery(QString("EXEC CoachesOfSportsman @sportName = %1").arg(sportName));
-        ui->coachesView->setColumnHidden(SportCoach_Id, true);
+        coachesModel->setQuery(QString("EXEC CoachesSport @sportName = %1").arg(sportName));
     }
 }
 

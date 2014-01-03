@@ -101,7 +101,11 @@ go
 create procedure SportsmenWithParticularSport
 	@sportName as varchar(30)
 as
-	select * from SportsmenWithSports where SportsmenWithSports.Sport = @sportName
+	select [Firstname],
+		   [Lastname],
+		   [Middlename],
+		   [Sport]
+	from SportsmenWithSports where SportsmenWithSports.Sport = @sportName
 go
 
 /* Sportsmen who are trained by concreete coach */
@@ -109,7 +113,11 @@ create procedure SportsmenOfCoach
 	@firstname as varchar(30),
 	@lastname as varchar(30)
 as
-	select * from SportsmenWithCoaches 
+	select [LearnerId],
+		   [Learner Firstname],
+		   [Learner Lastname],
+		   [Learner Middlename]
+	from SportsmenWithCoaches 
 	where 
 		SportsmenWithCoaches.[Coach Firstname] = @firstname
 		and SportsmenWithCoaches.[Coach Lastname ] = @lastname
@@ -128,9 +136,10 @@ as
 	select 
 		SportsmenWithSports.Firstname,
 		SportsmenWithSports.Lastname,
+		SportsmenWithSports.Middlename,
 		COUNT(SportsmenWithSports.Sport)
 	from SportsmenWithSports
-	group by SportsmenWithSports.Firstname, SportsmenWithSports.Lastname
+	group by SportsmenWithSports.Firstname, SportsmenWithSports.Lastname, SportsmenWithSports.Middlename
 	having count(SportsmenWithSports.Sport) > 1
 go
 
@@ -200,7 +209,6 @@ create procedure CoachesSport
 	@sportName as varchar(30)
 as
 	select distinct
-		SportsmenWithCoaches.[CoachId],
 		SportsmenWithCoaches.[Coach Firstname],
 		SportsmenWithCoaches.[Coach Lastname ],
 		SportsmenWithCoaches.[Coach Middlename]
