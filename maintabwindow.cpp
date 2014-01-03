@@ -178,10 +178,17 @@ void MainTabWindow::fillConstructionsAndOrganizations()
     constructionsModel->setQuery("SELECT BuildingName, CompetitionName, OrganizationName, SportName FROM AllCompetitions");
 
     ui->buildingsView->setModel(constructionsModel);
-    ui->buildingsView->setItemDelegate(new QSqlRelationalDelegate(this));
     ui->buildingsView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->buildingsView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->buildingsView->horizontalHeader()->setStretchLastSection(true);
+
+    organizationsModel = new QSqlQueryModel(this);
+    organizationsModel->setQuery("SELECT OrganizationName, CompetitionName, SportName FROM AllCompetitions");
+
+    ui->organizationsView->setModel(organizationsModel);
+    ui->organizationsView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->organizationsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->organizationsView->horizontalHeader()->setStretchLastSection(true);
 
     QSqlQueryModel* constructionType = new QSqlQueryModel(this);
     constructionType->setQuery("SELECT DISTINCT building_type FROM Building");
@@ -192,9 +199,9 @@ void MainTabWindow::fillConstructionsAndOrganizations()
 
     QDate today = QDate::currentDate();
     ui->constructionStartCompetition->setCalendarPopup(true);
+    ui->constructionStartCompetition->setDateRange(today.addDays(-365*4), today.addDays(365*2));
+    ui->constructionEndCompetition->setCalendarPopup(true);
     ui->constructionEndCompetition->setDateRange(today.addDays(-365*4), today.addDays(365*2));
-    ui->constructionStartCompetition->setCalendarPopup(true);
-    ui->constructionEndCompetition->setDateRange(today.addDays(-365*2), today.addDays(365*2));
     connect(ui->constructionStartCompetition, SIGNAL(dateChanged(QDate)), SLOT(applyConstructionCompetitionFilter()));
     connect(ui->constructionEndCompetition, SIGNAL(dateChanged(QDate)), SLOT(applyConstructionCompetitionFilter()));
 
@@ -223,6 +230,12 @@ void MainTabWindow::fillCompetitions()
     ui->winnersView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->winnersView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->winnersView->horizontalHeader()->setStretchLastSection(true);
+
+    competitionsClubs = new QSqlQueryModel(this);
+    ui->clubsView->setModel(competitionsClubs);
+    ui->clubsView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->clubsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->clubsView->horizontalHeader()->setStretchLastSection(true);
 
     QSqlQueryModel* constructions = new QSqlQueryModel(this);
     constructions->setQuery("SELECT name FROM Building");
@@ -292,7 +305,6 @@ void MainTabWindow::applySportsmanDateFilter()
     sportsmenModel->setQuery(QString("EXEC ThoseWhoDidntTakePartInCompetitions @from = '%1', @to = '%2'")
                              .arg(startDate.toString("yyyy-MM-dd"))
                              .arg(endDate.toString("yyyy-MM-dd")));
-
 }
 
 void MainTabWindow::applyConstructionPlacesFilter()
@@ -311,6 +323,9 @@ void MainTabWindow::applyConstructionCompetitionFilter()
     QDate startDate = ui->constructionStartCompetition->date();
     QDate endDate = ui->constructionEndCompetition->date();
     constructionsModel->setQuery(QString("EXEC CompetitionsOnBuildingBetweenDate @from = '%1', @to = '%2'")
+                                 .arg(startDate.toString("yyyy-MM-dd"))
+                                 .arg(endDate.toString("yyyy-MM-dd")));
+    organizationsModel->setQuery(QString("EXEC CompetitonsByOrganizationBetweenDate @from = '%1', @to = '%2'")
                                  .arg(startDate.toString("yyyy-MM-dd"))
                                  .arg(endDate.toString("yyyy-MM-dd")));
 }
@@ -338,6 +353,9 @@ void MainTabWindow::applyCompetitionDateFilter()
     QDate startDate = ui->startCompetitionDate->date();
     QDate endDate = ui->endCompetitionDate->date();
     competitionsModel->setQuery(QString("EXEC CompetitionsBetweenDate @from = '%1', @to = '%2'")
+                                .arg(startDate.toString("yyyy-MM-dd"))
+                                .arg(endDate.toString("yyyy-MM-dd")));
+    competitionsClubs->setQuery(QString("EXEC ClubSportsmensAmountInCompetitions @from = '%1', @to = '%2'")
                                 .arg(startDate.toString("yyyy-MM-dd"))
                                 .arg(endDate.toString("yyyy-MM-dd")));
 }

@@ -84,9 +84,11 @@ private:
     QSqlQueryModel* sportsmanCoachesModel;
 
     QSqlQueryModel* constructionsModel;
+    QSqlQueryModel* organizationsModel;
 
     QSqlQueryModel* competitionsModel;
     QSqlQueryModel* competitionWinnersModel;
+    QSqlQueryModel* competitionsClubs;
 
     /* Auxiliary models */
     QSqlQueryModel* allCoaches;
