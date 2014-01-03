@@ -40,7 +40,6 @@ MainTabWindow::MainTabWindow(QWidget* parent)
 
 MainTabWindow::~MainTabWindow()
 {
-    delete ui;
 }
 
 void MainTabWindow::loggedIn(const QString& username)

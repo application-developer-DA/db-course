@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <QWidget>
 
 namespace Ui {
@@ -53,7 +55,7 @@ private:
     void fillConstructionsAndOrganizations();    // Configure 3 tab
     void fillCompetitions();                     // Configure 4 tab
 
-    Ui::MainTabWindow* ui;
+    std::unique_ptr<Ui::MainTabWindow> ui;
 
     QSqlTableModel* sportsModel;
     QSqlQueryModel* coachesModel;
