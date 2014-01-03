@@ -33,85 +33,63 @@
       <attribute name="title">
        <string>Sports</string>
       </attribute>
-      <widget class="QWidget" name="">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>280</y>
-         <width>701</width>
-         <height>213</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QLabel" name="coachesLabel">
-          <property name="text">
-           <string>Coaches for selected sport</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableView" name="coachesView"/>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>704</width>
-         <height>246</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QLabel" name="labelSports">
-            <property name="text">
-             <string>Available sports</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableView" name="sportsView"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>538</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="addSportBtn">
-            <property name="text">
-             <string>Add Sport</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="deleteSportBtn">
-            <property name="text">
-             <string>Delete Sport</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="labelSports">
+           <property name="text">
+            <string>Available sports</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableView" name="sportsView"/>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>538</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="addSportBtn">
+           <property name="text">
+            <string>Add Sport</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="deleteSportBtn">
+           <property name="text">
+            <string>Delete Sport</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="coachesLabel">
+         <property name="text">
+          <string>Coaches for selected sport</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QTableView" name="coachesView"/>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -358,8 +336,8 @@ in competitions</string>
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>109</width>
-         <height>198</height>
+         <width>131</width>
+         <height>271</height>
         </rect>
        </property>
        <property name="title">
@@ -381,7 +359,7 @@ in competitions</string>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>18</height>
+            <height>3</height>
            </size>
           </property>
          </spacer>
@@ -389,14 +367,14 @@ in competitions</string>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
-           <widget class="QLabel" name="label_6">
+           <widget class="QRadioButton" name="constructionTypeFilter">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Construction Type&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>Type</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="constructionTypeFilter">
+           <widget class="QComboBox" name="constructionTypeFilterCombobox">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -412,7 +390,7 @@ in competitions</string>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>18</height>
+            <height>0</height>
            </size>
           </property>
          </spacer>
@@ -420,14 +398,14 @@ in competitions</string>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
-           <widget class="QLabel" name="label_7">
+           <widget class="QRadioButton" name="constructionPlacesFilter">
             <property name="text">
-             <string>Available Places</string>
+             <string>Places</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="constructionPlacesFilter">
+           <widget class="QLineEdit" name="constructionPlacesFilterEdit">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -435,9 +413,43 @@ in competitions</string>
           </item>
          </layout>
         </item>
+        <item>
+         <spacer name="verticalSpacer_11">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="constructionCompetitionsFilter">
+          <property name="text">
+           <string>Competition dates</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="constructionStartCompetition">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="constructionEndCompetition">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>170</x>
@@ -475,20 +487,6 @@ in competitions</string>
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="addConstruction">
-            <property name="text">
-             <string>Add Construction</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="deleteConstruction">
-            <property name="text">
-             <string>Delete Selected</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>
@@ -531,112 +529,27 @@ in competitions</string>
          <height>360</height>
         </rect>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
        <property name="title">
         <string>Filters</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_15">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
-        <item>
-         <widget class="QCheckBox" name="enableCompetitionFilters">
-          <property name="text">
-           <string>Enable filters</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_10">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>13</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="competitionDateFilter">
-          <property name="text">
-           <string>Between date</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDateEdit" name="startCompetitionDate">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDateEdit" name="endCompetitionDate">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_7">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>13</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="competitionOrganizerFilter">
-          <property name="text">
-           <string>Organizer</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="competitionOrganizersCombobox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer_8">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>13</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="9" column="0">
          <widget class="QRadioButton" name="competitionSportFilter">
           <property name="text">
            <string>Sport</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QComboBox" name="competitionSportFilterCombobox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
+        <item row="11" column="0">
          <spacer name="verticalSpacer_9">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -646,19 +559,116 @@ in competitions</string>
           </property>
          </spacer>
         </item>
-        <item>
+        <item row="12" column="0">
          <widget class="QRadioButton" name="competitionConstructionFilter">
           <property name="text">
            <string>Sport Construction</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="10" column="0">
+         <widget class="QComboBox" name="competitionSportFilterCombobox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QDateEdit" name="endCompetitionDate">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="enableCompetitionFilters">
+          <property name="text">
+           <string>Enable filters</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="competitionDateFilter">
+          <property name="text">
+           <string>Between date</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <spacer name="verticalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>13</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="5" column="0">
+         <spacer name="verticalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>13</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="7" column="0">
+         <widget class="QComboBox" name="competitionOrganizersCombobox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="13" column="0">
          <widget class="QComboBox" name="competitionConstructionFilterCombobox">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QDateEdit" name="startCompetitionDate">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QRadioButton" name="competitionOrganizerFilter">
+          <property name="text">
+           <string>Organizer</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <spacer name="verticalSpacer_10">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>13</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>

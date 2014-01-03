@@ -25,8 +25,6 @@ public:
 private slots:
     void on_addSportBtn_clicked();
     void on_deleteSportBtn_clicked();
-    void on_addConstruction_clicked();
-    void on_deleteConstruction_clicked();
 
     void updateSportCoachesView();
     void updateSportsmanCoachesView();
@@ -38,7 +36,12 @@ private slots:
     void on_competitionsFilterCheckbox_stateChanged(int state);
     void on_multipleSportsFilterCheckbox_stateChanged(int state);
     void on_sportsmenResetFilters_clicked();
+
     void on_enableBuildingFilters_stateChanged(int state);
+    void on_constructionTypeFilter_toggled(bool checked);
+    void on_constructionPlacesFilter_toggled(bool checked);
+    void on_constructionCompetitionsFilter_toggled(bool checked);
+
     void on_enableCompetitionFilters_stateChanged(int state);
     void on_competitionDateFilter_toggled(bool checked);
     void on_competitionOrganizerFilter_toggled(bool checked);
@@ -46,14 +49,15 @@ private slots:
     void on_competitionConstructionFilter_toggled(bool checked);
 
     /* Sportsmen filters */
-    void applySportFilter();
-    void applyQualificationFilter();
-    void applyCoachFilter();
-    void applyDateFilter();
+    void applySportsmanSportFilter();
+    void applySportsmanQualificationFilter();
+    void applySportsmanCoachFilter();
+    void applySportsmanDateFilter();
 
     /* Construction filters */
-    void applyPlacesFilter();
-    void applyTypeFilter();
+    void applyConstructionPlacesFilter();
+    void applyConstructionTypeFilter();
+    void applyConstructionCompetitionFilter();
 
     /* Competition filters */
     void applyCompetitionConstructionFilter();
@@ -69,14 +73,18 @@ private:
     void fillCompetitions();                     // Configure 4 tab
 
     QList<QWidget*> competitionFilterWidgets;
+    QList<QWidget*> constructionFilterWidgets;
 
     Ui::MainTabWindow* ui;
 
     QSqlTableModel* sportsModel;
     QSqlQueryModel* coachesModel;
+
     QSqlQueryModel* sportsmenModel;
     QSqlQueryModel* sportsmanCoachesModel;
-    QSqlRelationalTableModel* constructionsModel;
+
+    QSqlQueryModel* constructionsModel;
+
     QSqlQueryModel* competitionsModel;
     QSqlQueryModel* competitionWinnersModel;
 

@@ -84,24 +84,44 @@ inner join Club on Club.id = Participant.club_id
 go
 
 /* List of all buildling by type etc */
-create procedure BuildlingByType
-	@buildlingType as varchar(30)
+create procedure BuildingByType
+	@buildingType as varchar(30)
 as
-	select * from Building where building_type = @buildlingType
+	select Building.id [Id],
+	       Organization.name [Owner Organization],
+		   Building.name [Name],
+		   Building.building_address [Address],
+		   Building.building_type [Type],
+		   Building.places [Places],
+		   Building.area [Area]
+	from Building 
+	inner join Organization on Organization.id = Building.organization_id	   
+	where building_type = @buildingType
 go
 
 /* List of all building which has more than 100 places */
-create procedure BuildlingWithPlaces
+create procedure BuildingWithPlaces
 	@placesAmount as int
 as
-	select * from Building where places > @placesAmount
+	select Building.id [Id],
+	       Organization.name [Owner Organization],
+		   Building.name [Name],
+		   Building.building_address [Address],
+		   Building.building_type [Type],
+		   Building.places [Places],
+		   Building.area [Area]
+	from Building
+	inner join Organization on Organization.id = Building.organization_id
+	where places > @placesAmount
 go
 
 /* List sportsmen with particular sport */
 create procedure SportsmenWithParticularSport
 	@sportName as varchar(30)
 as
-	select [Firstname],
+	select 
+		   [PersonId],
+		   [Firstname],
 		   [Lastname],
 		   [Middlename],
 		   [Sport]
@@ -113,7 +133,9 @@ create procedure SportsmenOfCoach
 	@firstname as varchar(30),
 	@lastname as varchar(30)
 as
-	select [Learner Firstname] AS Firstname,
+	select 
+		   [LearnerId] AS Id,
+		   [Learner Firstname] AS Firstname,
 		   [Learner Lastname] AS Lastname,
 		   [Learner Middlename] AS Middlename
 	from SportsmenWithCoaches 
@@ -126,7 +148,9 @@ go
 create procedure SportsmenWithQualification
 	@sportTitle as varchar(30)
 as
-	select Firstname,
+	select 
+	       PersonId,
+		   Firstname,
 		   Lastname,
 		   Middlename,
 		   Birthdate,
