@@ -256,6 +256,13 @@ void MainTabWindow::fillCompetitions()
     ui->endCompetitionDate->setDateRange(today.addDays(-365*2), today.addDays(365*2));
     connect(ui->startCompetitionDate, SIGNAL(dateChanged(QDate)), SLOT(applyCompetitionDateFilter()));
     connect(ui->endCompetitionDate, SIGNAL(dateChanged(QDate)), SLOT(applyCompetitionDateFilter()));
+
+    competitionFilterWidgets << ui->competitionConstructionFilter << ui->competitionConstructionFilterCombobox
+                             << ui->competitionOrganizerFilter << ui->competitionOrganizersCombobox
+                             << ui->competitionSportFilter << ui->competitionSportFilterCombobox
+                             << ui->competitionDateFilter << ui->startCompetitionDate << ui->endCompetitionDate;
+    foreach (QWidget* widget, competitionFilterWidgets)
+        widget->hide();
 }
 
 void MainTabWindow::updateWinnersView()
@@ -421,3 +428,40 @@ void MainTabWindow::on_enableBuildingFilters_stateChanged(int state)
     ui->constructionTypeFilter->setEnabled(state);
 }
 
+void MainTabWindow::on_enableCompetitionFilters_stateChanged(int state)
+{
+    if (state != Qt::Checked)
+        competitionsModel->setQuery("SELECT DISTINCT CompetitionName AS Name, CompetitionDate AS Date, SportName AS Sport, BuildingName AS Construction, OrganizationName AS Organization FROM AllCompetitions");
+
+    foreach (QWidget* widget, competitionFilterWidgets)
+        widget->setVisible(state == Qt::Checked);
+}
+
+void MainTabWindow::on_competitionDateFilter_toggled(bool checked)
+{
+    if (checked)
+        applyCompetitionDateFilter();
+    ui->startCompetitionDate->setEnabled(checked);
+    ui->endCompetitionDate->setEnabled(checked);
+}
+
+void MainTabWindow::on_competitionOrganizerFilter_toggled(bool checked)
+{
+    if (checked)
+        applyCompetitionOrganizerFilter();
+    ui->competitionOrganizersCombobox->setEnabled(checked);
+}
+
+void MainTabWindow::on_competitionSportFilter_toggled(bool checked)
+{
+    if (checked)
+        applyCompetitionSportFilter();
+    ui->competitionSportFilterCombobox->setEnabled(checked);
+}
+
+void MainTabWindow::on_competitionConstructionFilter_toggled(bool checked)
+{
+    if (checked)
+        applyCompetitionConstructionFilter();
+    ui->competitionConstructionFilterCombobox->setEnabled(checked);
+}

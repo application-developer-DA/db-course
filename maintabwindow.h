@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <QList>
 #include <QWidget>
 
 namespace Ui {
@@ -38,6 +39,11 @@ private slots:
     void on_multipleSportsFilterCheckbox_stateChanged(int state);
     void on_sportsmenResetFilters_clicked();
     void on_enableBuildingFilters_stateChanged(int state);
+    void on_enableCompetitionFilters_stateChanged(int state);
+    void on_competitionDateFilter_toggled(bool checked);
+    void on_competitionOrganizerFilter_toggled(bool checked);
+    void on_competitionSportFilter_toggled(bool checked);
+    void on_competitionConstructionFilter_toggled(bool checked);
 
     /* Sportsmen filters */
     void applySportFilter();
@@ -61,6 +67,8 @@ private:
     void fillSportsmen();                        // Configure 2 tab
     void fillConstructionsAndOrganizations();    // Configure 3 tab
     void fillCompetitions();                     // Configure 4 tab
+
+    QList<QWidget*> competitionFilterWidgets;
 
     Ui::MainTabWindow* ui;
 
