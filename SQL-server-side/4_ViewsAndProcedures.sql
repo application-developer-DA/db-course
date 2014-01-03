@@ -50,7 +50,7 @@ select
 	L.middlename [Learner Middlename],
 	C.id [CoachId],
 	C.firstname [Coach Firstname],
-	C.lastname [Coach Lastname ],
+	C.lastname [Coach Lastname],
 	C.middlename [Coach Middlename],
 	Sport.name [Sport]
 from
@@ -113,10 +113,9 @@ create procedure SportsmenOfCoach
 	@firstname as varchar(30),
 	@lastname as varchar(30)
 as
-	select [LearnerId],
-		   [Learner Firstname],
-		   [Learner Lastname],
-		   [Learner Middlename]
+	select [Learner Firstname] AS Firstname,
+		   [Learner Lastname] AS Lastname,
+		   [Learner Middlename] AS Middlename
 	from SportsmenWithCoaches 
 	where 
 		SportsmenWithCoaches.[Coach Firstname] = @firstname
@@ -127,8 +126,7 @@ go
 create procedure SportsmenWithQualification
 	@sportTitle as varchar(30)
 as
-	select PersonId,
-		   Firstname,
+	select Firstname,
 		   Lastname,
 		   Middlename,
 		   Birthdate,
@@ -140,9 +138,9 @@ go
 create procedure ThoseWhoStudyMoreThanOneSport
 as
 	select 
-		SportsmenWithSports.Firstname,
-		SportsmenWithSports.Lastname,
-		SportsmenWithSports.Middlename,
+		SportsmenWithSports.Firstname [Firstname],
+		SportsmenWithSports.Lastname [Lastname],
+		SportsmenWithSports.Middlename [Middlename],
 		COUNT(SportsmenWithSports.Sport)
 	from SportsmenWithSports
 	group by SportsmenWithSports.Firstname, SportsmenWithSports.Lastname, SportsmenWithSports.Middlename
@@ -155,9 +153,9 @@ create procedure CoachesOfSportsman
 	@lastname as varchar(30)
 as
 	select distinct
-		SportsmenWithCoaches.[Coach Firstname],
-		SportsmenWithCoaches.[Coach Lastname ],
-		SportsmenWithCoaches.[Coach Middlename]
+		SportsmenWithCoaches.[Coach Firstname] AS Firstname,
+		SportsmenWithCoaches.[Coach Lastname ] AS Lastname,
+		SportsmenWithCoaches.[Coach Middlename] AS Middlename
 	from SportsmenWithCoaches
 	where
 		SportsmenWithCoaches.[Learner Firstname] = @firstname
@@ -215,9 +213,9 @@ create procedure CoachesSport
 	@sportName as varchar(30)
 as
 	select distinct
-		SportsmenWithCoaches.[Coach Firstname],
-		SportsmenWithCoaches.[Coach Lastname ],
-		SportsmenWithCoaches.[Coach Middlename]
+		SportsmenWithCoaches.[Coach Firstname] AS Firstname,
+		SportsmenWithCoaches.[Coach Lastname] AS Lastname,
+		SportsmenWithCoaches.[Coach Middlename] AS Middlename
 	from SportsmenWithCoaches
 	where SportsmenWithCoaches.Sport = @sportName
 go

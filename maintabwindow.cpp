@@ -9,18 +9,6 @@ enum {
     Sport_Name
 };
 
-enum {
-    SportsmanWithSports_Id,
-    SportsmanWithSports_Firstname,
-    SportsmanWithSports_Lastname,
-    SportsmanWithSports_Middlename,
-    SportsmanWithSports_Birthdate,
-    SportsmanWithSports_SportId,
-    SportsmanWithSports_Sport,
-    SportsmanWithSports_ExperienceId,
-    SportsmanWithSports_Title
-};
-
 MainTabWindow::MainTabWindow(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::MainTabWindow)
@@ -107,21 +95,18 @@ void MainTabWindow::fillSports()
 void MainTabWindow::fillSportsmen()
 {
     sportsmenModel = new QSqlQueryModel(this);
-    sportsmenModel->setQuery("SELECT DISTINCT * FROM SportsmenWithSports");
+    sportsmenModel->setQuery("SELECT DISTINCT Firstname, Lastname, Middlename, Birthdate FROM SportsmenWithSports");
 
     ui->sportsmenView->setModel(sportsmenModel);
     ui->sportsmenView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->sportsmenView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->sportsmenView->setColumnHidden(SportsmanWithSports_Id, true);
-    for (int i = SportsmanWithSports_SportId; i <= SportsmanWithSports_Title; ++i)
-        ui->sportsmenView->setColumnHidden(i, true);
     ui->sportsmenView->horizontalHeader()->setStretchLastSection(true);
 
     connect(ui->sportsmenView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(updateSportsmanCoachesView()));
 
     sportsmanCoachesModel = new QSqlQueryModel();
-    sportsmanCoachesModel->setQuery("SELECT DISTINCT [Coach Firstname], [Coach Lastname] FROM SportsmenWithCoaches");
+    sportsmanCoachesModel->setQuery("SELECT DISTINCT [Coach Firstname] AS Firstname, [Coach Lastname] AS Lastname FROM SportsmenWithCoaches");
     ui->sportsmanCoachesView->setModel(sportsmanCoachesModel);
     ui->sportsmanCoachesView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->sportsmanCoachesView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -138,7 +123,7 @@ void MainTabWindow::fillSportsmen()
     connect(ui->qualificationComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applyQualificationFilter()));
 
     allCoaches = new QSqlQueryModel(this);
-    allCoaches->setQuery("SELECT DISTINCT [CoachId], [Coach Firstname], [Coach Lastname] FROM SportsmenWithCoaches");
+    allCoaches->setQuery("SELECT DISTINCT [CoachId] AS Id, [Coach Firstname] AS Firstname, [Coach Lastname] AS Lastname FROM SportsmenWithCoaches");
     ui->coachFilterComboBox->setModel(allCoaches);
     ui->coachFilterComboBox->setModelColumn(2);
     connect(ui->coachFilterComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applyCoachFilter()));
@@ -177,8 +162,8 @@ void MainTabWindow::updateSportsmanCoachesView()
         QSqlRecord record = sportsmenModel->record(index.row());
 
         sportsmanCoachesModel->setQuery(QString("EXEC CoachesOfSportsman @firstname = %1, @lastname = %2")
-                                        .arg(record.value(SportsmanWithSports_Firstname).toString())
-                                        .arg(record.value(SportsmanWithSports_Lastname).toString()));
+                                        .arg(record.value("Firstname").toString())
+                                        .arg(record.value("Lastname").toString()));
     }
 }
 
@@ -191,8 +176,8 @@ void MainTabWindow::applySportFilter()
 void MainTabWindow::applyCoachFilter()
 {
     int row = ui->coachFilterComboBox->currentIndex();
-    QString firstname = allCoaches->record(row).value(1).toString();
-    QString lastname = allCoaches->record(row).value(2).toString();
+    QString firstname = allCoaches->record(row).value("Firstname").toString();
+    QString lastname = allCoaches->record(row).value("Lastname").toString();
     sportsmenModel->setQuery(QString("EXEC SportsmenOfCoach @firstname = %1, @lastname = %2").arg(firstname).arg(lastname));
 }
 
@@ -241,7 +226,7 @@ void MainTabWindow::on_competitionsFilterCheckbox_stateChanged(int state)
 
 void MainTabWindow::on_sportsmenResetFilters_clicked()
 {
-    sportsmenModel->setQuery("SELECT DISTINCT * FROM SportsmenWithSports");
+    sportsmenModel->setQuery("SELECT DISTINCT Firstname, Lastname, Middlename, Birthdate FROM SportsmenWithSports");
 }
 
 void MainTabWindow::on_multipleSportsFilterCheckbox_stateChanged(int state)
