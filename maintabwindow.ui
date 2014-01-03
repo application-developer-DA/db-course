@@ -20,7 +20,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabSports">
       <attribute name="title">
@@ -39,7 +39,7 @@
         <item>
          <widget class="QLabel" name="coachesLabel">
           <property name="text">
-           <string>Coaches for selected sports:</string>
+           <string>Coaches for selected sport</string>
           </property>
          </widget>
         </item>
@@ -63,7 +63,7 @@
           <item>
            <widget class="QLabel" name="labelSports">
             <property name="text">
-             <string>Available sports:</string>
+             <string>Available sports</string>
             </property>
            </widget>
           </item>
@@ -114,7 +114,7 @@
        <item row="0" column="0" rowspan="2">
         <widget class="QGroupBox" name="sportsmenFilters">
          <property name="title">
-          <string>Filters:</string>
+          <string>Filters</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="7" column="0">
@@ -293,7 +293,7 @@ in competitions</string>
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Sportsmen:</string>
+            <string>Sportsmen</string>
            </property>
           </widget>
          </item>
@@ -331,7 +331,7 @@ in competitions</string>
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Coaches of particular sportsman:</string>
+            <string>Coaches of particular sportsman</string>
            </property>
           </widget>
          </item>
@@ -445,7 +445,7 @@ in competitions</string>
           <item>
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Sport Constructions:</string>
+             <string>Sport Constructions</string>
             </property>
            </widget>
           </item>
@@ -492,6 +492,180 @@ in competitions</string>
       <attribute name="title">
        <string>Competitions Info</string>
       </attribute>
+      <widget class="QTableView" name="competitionsView">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>50</y>
+         <width>256</width>
+         <height>192</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_8">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>30</y>
+         <width>121</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Competitions</string>
+       </property>
+      </widget>
+      <widget class="QGroupBox" name="competitionFiltersGroup">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>181</width>
+         <height>341</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Filters</string>
+       </property>
+       <widget class="QCheckBox" name="enableCompetitionFilters">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>261</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Enable filters</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="competitonTimeFilter">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>141</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Between date</string>
+        </property>
+       </widget>
+       <widget class="QDateEdit" name="startCompetitionDate">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>80</y>
+          <width>110</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QDateEdit" name="endCompetitionDate">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>100</y>
+          <width>110</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="competitionOrganizerFilter">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>151</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Organizer</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="competitionOrganizersCombobox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>170</y>
+          <width>151</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="competitionSportFilter">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>220</y>
+          <width>161</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Sport</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="competitionSportFilterCombobox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>240</y>
+          <width>151</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="competitionConstructionFilterCombobox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>310</y>
+          <width>151</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="competitionConstructionFilter">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>290</y>
+          <width>82</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Sport Construction</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QTableView" name="winnersView">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>290</y>
+         <width>256</width>
+         <height>192</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_9">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>270</y>
+         <width>181</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Competition Winners</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>

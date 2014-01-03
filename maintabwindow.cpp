@@ -33,6 +33,8 @@ MainTabWindow::MainTabWindow(QWidget* parent)
     , sportsmenModel(nullptr)
     , sportsmanCoachesModel(nullptr)
     , constructionsModel(nullptr)
+    , competitionsModel(nullptr)
+    , competitionWinnersModel(nullptr)
     , allCoaches(nullptr)
 {
     ui->setupUi(this);
@@ -40,6 +42,7 @@ MainTabWindow::MainTabWindow(QWidget* parent)
 
 MainTabWindow::~MainTabWindow()
 {
+    delete ui;
 }
 
 void MainTabWindow::loggedIn(const QString& username)
@@ -51,6 +54,7 @@ void MainTabWindow::loggedIn(const QString& username)
 
     fillSportsmen();
     fillConstructionsAndOrganizations();
+    fillCompetitions();
 }
 
 void MainTabWindow::on_addSportBtn_clicked()
@@ -212,6 +216,59 @@ void MainTabWindow::fillConstructionsAndOrganizations()
     connect(ui->constructionPlacesFilter, SIGNAL(editingFinished()), SLOT(applyPlacesFilter()));
 }
 
+void MainTabWindow::fillCompetitions()
+{
+    competitionsModel = new QSqlQueryModel(this);
+    competitionsModel->setQuery("SELECT DISTINCT CompetitionName AS Name, CompetitionDate AS Date, SportName AS Sport, BuildingName AS Construction, OrganizationName AS Organization FROM AllCompetitions");
+
+    ui->competitionsView->setModel(competitionsModel);
+    ui->competitionsView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->competitionsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->competitionsView->horizontalHeader()->setStretchLastSection(true);
+
+    connect(ui->competitionsView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            SLOT(updateWinnersView()));
+
+    competitionWinnersModel = new QSqlQueryModel(this);
+    ui->winnersView->setModel(competitionWinnersModel);
+    ui->winnersView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->winnersView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->winnersView->horizontalHeader()->setStretchLastSection(true);
+
+    QSqlQueryModel* constructions = new QSqlQueryModel(this);
+    constructions->setQuery("SELECT name FROM Building");
+    ui->competitionConstructionFilterCombobox->setModel(constructions);
+    connect(ui->competitionConstructionFilterCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applyCompetitionConstructionFilter()));
+
+    QSqlQueryModel* organizers = new QSqlQueryModel(this);
+    organizers->setQuery("SELECT name FROM Organization");
+    ui->competitionOrganizersCombobox->setModel(organizers);
+    connect(ui->competitionOrganizersCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applyCompetitionOrganizerFilter()));
+
+    ui->competitionSportFilterCombobox->setModel(sportsModel);
+    ui->competitionSportFilterCombobox->setModelColumn(Sport_Name);
+    connect(ui->competitionSportFilterCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applyCompetitionSportFilter()));
+
+    QDate today = QDate::currentDate();
+    ui->startCompetitionDate->setCalendarPopup(true);
+    ui->startCompetitionDate->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    ui->endCompetitionDate->setCalendarPopup(true);
+    ui->endCompetitionDate->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    connect(ui->startCompetitionDate, SIGNAL(dateChanged(QDate)), SLOT(applyCompetitionDateFilter()));
+    connect(ui->endCompetitionDate, SIGNAL(dateChanged(QDate)), SLOT(applyCompetitionDateFilter()));
+}
+
+void MainTabWindow::updateWinnersView()
+{
+    QModelIndex index = ui->competitionsView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = competitionsModel->record(index.row());
+
+        competitionWinnersModel->setQuery(QString("EXEC CompetitionWinners @competitionName = %1")
+                                        .arg(record.value("Name").toString()));
+    }
+}
+
 void MainTabWindow::on_addConstruction_clicked()
 {
     int row = constructionsModel->rowCount();
@@ -284,6 +341,33 @@ void MainTabWindow::applyTypeFilter()
 {
     constructionsModel->setFilter(QString("building_type = '%1'").arg(ui->constructionTypeFilter->currentText()));
     constructionsModel->select();
+}
+
+void MainTabWindow::applyCompetitionConstructionFilter()
+{
+    QString constructionName = ui->competitionConstructionFilterCombobox->currentText();
+    competitionsModel->setQuery(QString("EXEC CompetitionsInBuildling @buildingName = '%1'").arg(constructionName));
+}
+
+void MainTabWindow::applyCompetitionOrganizerFilter()
+{
+    QString organizationName = ui->competitionOrganizersCombobox->currentText();
+    competitionsModel->setQuery(QString("EXEC CompetitionByOrganiztion @organizationName = '%1'").arg(organizationName));
+}
+
+void MainTabWindow::applyCompetitionSportFilter()
+{
+    QString sport = ui->competitionSportFilterCombobox->currentText();
+    competitionsModel->setQuery(QString("EXEC CompetitionsSport @sportName = '%1'").arg(sport));
+}
+
+void MainTabWindow::applyCompetitionDateFilter()
+{
+    QDate startDate = ui->startCompetitionDate->date();
+    QDate endDate = ui->endCompetitionDate->date();
+    competitionsModel->setQuery(QString("EXEC CompetitionsBetweenDate @from = %1, @to = %2")
+                                .arg(startDate.toString("yyyy-MM-dd"))
+                                .arg(endDate.toString("yyyy-MM-dd")));
 }
 
 void MainTabWindow::on_sportFilterCheckbox_stateChanged(int state)

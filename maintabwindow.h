@@ -29,6 +29,7 @@ private slots:
 
     void updateSportCoachesView();
     void updateSportsmanCoachesView();
+    void updateWinnersView();
 
     void on_sportFilterCheckbox_stateChanged(int state);
     void on_qualificationFilterCheckbox_stateChanged(int state);
@@ -48,6 +49,12 @@ private slots:
     void applyPlacesFilter();
     void applyTypeFilter();
 
+    /* Competition filters */
+    void applyCompetitionConstructionFilter();
+    void applyCompetitionSportFilter();
+    void applyCompetitionOrganizerFilter();
+    void applyCompetitionDateFilter();
+
 private:
     /* Tabs filling functions */
     void fillSports();                           // Configure 1 tab
@@ -55,13 +62,15 @@ private:
     void fillConstructionsAndOrganizations();    // Configure 3 tab
     void fillCompetitions();                     // Configure 4 tab
 
-    std::unique_ptr<Ui::MainTabWindow> ui;
+    Ui::MainTabWindow* ui;
 
     QSqlTableModel* sportsModel;
     QSqlQueryModel* coachesModel;
     QSqlQueryModel* sportsmenModel;
     QSqlQueryModel* sportsmanCoachesModel;
     QSqlRelationalTableModel* constructionsModel;
+    QSqlQueryModel* competitionsModel;
+    QSqlQueryModel* competitionWinnersModel;
 
     /* Auxiliary models */
     QSqlQueryModel* allCoaches;

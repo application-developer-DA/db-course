@@ -255,6 +255,7 @@ go
 
 /* Winners of competition */
 create procedure CompetitionWinners
+	@competitionName varchar(30)
 as
 	select 
 		AllParticipants.Firstname,
@@ -263,6 +264,7 @@ as
 		AllParticipants.Scores
 	from AllParticipants
 	where AllParticipants.Scores > 75
+	and	  AllParticipants.[Competition Name] = @competitionName
 go
 
 /* Get all clubs and amount of sportsmen who took part in competitions between date */
