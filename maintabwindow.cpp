@@ -251,7 +251,7 @@ void MainTabWindow::fillCompetitions()
 
     QDate today = QDate::currentDate();
     ui->startCompetitionDate->setCalendarPopup(true);
-    ui->startCompetitionDate->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    ui->startCompetitionDate->setDateRange(today.addDays(-365*4), today.addDays(365*2));
     ui->endCompetitionDate->setCalendarPopup(true);
     ui->endCompetitionDate->setDateRange(today.addDays(-365*2), today.addDays(365*2));
     connect(ui->startCompetitionDate, SIGNAL(dateChanged(QDate)), SLOT(applyCompetitionDateFilter()));
@@ -324,7 +324,7 @@ void MainTabWindow::applyDateFilter()
 {
     QDate startDate = ui->startDateEdit->date();
     QDate endDate = ui->endDateEdit->date();
-    sportsmenModel->setQuery(QString("EXEC ThoseWhoDidntTakePartInCompetitions @from = %1, @to = %2")
+    sportsmenModel->setQuery(QString("EXEC ThoseWhoDidntTakePartInCompetitions @from = '%1', @to = '%2'")
                              .arg(startDate.toString("yyyy-MM-dd"))
                              .arg(endDate.toString("yyyy-MM-dd")));
 
@@ -339,33 +339,33 @@ void MainTabWindow::applyPlacesFilter()
 
 void MainTabWindow::applyTypeFilter()
 {
-    constructionsModel->setFilter(QString("building_type = '%1'").arg(ui->constructionTypeFilter->currentText()));
+    constructionsModel->setFilter(QString("building_type = %1").arg(ui->constructionTypeFilter->currentText()));
     constructionsModel->select();
 }
 
 void MainTabWindow::applyCompetitionConstructionFilter()
 {
     QString constructionName = ui->competitionConstructionFilterCombobox->currentText();
-    competitionsModel->setQuery(QString("EXEC CompetitionsInBuildling @buildingName = '%1'").arg(constructionName));
+    competitionsModel->setQuery(QString("EXEC CompetitionsInBuilding @buildingName = '%1'").arg(constructionName));
 }
 
 void MainTabWindow::applyCompetitionOrganizerFilter()
 {
     QString organizationName = ui->competitionOrganizersCombobox->currentText();
-    competitionsModel->setQuery(QString("EXEC CompetitionByOrganiztion @organizationName = '%1'").arg(organizationName));
+    competitionsModel->setQuery(QString("EXEC CompetitionsByOrganization @organizationName = '%1'").arg(organizationName));
 }
 
 void MainTabWindow::applyCompetitionSportFilter()
 {
     QString sport = ui->competitionSportFilterCombobox->currentText();
-    competitionsModel->setQuery(QString("EXEC CompetitionsSport @sportName = '%1'").arg(sport));
+    competitionsModel->setQuery(QString("EXEC CompetitionsSport @sportName = %1").arg(sport));
 }
 
 void MainTabWindow::applyCompetitionDateFilter()
 {
     QDate startDate = ui->startCompetitionDate->date();
     QDate endDate = ui->endCompetitionDate->date();
-    competitionsModel->setQuery(QString("EXEC CompetitionsBetweenDate @from = %1, @to = %2")
+    competitionsModel->setQuery(QString("EXEC CompetitionsBetweenDate @from = '%1', @to = '%2'")
                                 .arg(startDate.toString("yyyy-MM-dd"))
                                 .arg(endDate.toString("yyyy-MM-dd")));
 }

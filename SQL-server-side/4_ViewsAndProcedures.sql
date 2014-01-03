@@ -187,14 +187,14 @@ as
 go
 
 /* Competitions in specific building */
-create procedure CompetitionsInBuildling
-	@buildlingName as varchar(30)
+create procedure CompetitionsInBuilding
+	@buildingName as varchar(30)
 as
 	select 
 		AllCompetitions.CompetitionName,
 		AllCompetitions.BuildingName
 	from AllCompetitions
-	where AllCompetitions.BuildingName = @buildlingName
+	where AllCompetitions.BuildingName = @buildingName
 go
 
 /* Competitions by specific sport */
@@ -221,7 +221,7 @@ as
 go
 
 /* The amount of competitions by organizations between date */
-create procedure CompeititonsByOrganizationsBetweenDate
+create procedure CompeititonsByOrganizationBetweenDate
 	@from date,
 	@to date
 as
@@ -239,7 +239,7 @@ as
 go
 
 /* Competitions on building between date */
-create procedure CompetitionsOnBuildlingBetweenDate
+create procedure CompetitionsOnBuildingBetweenDate
 	@from date,
 	@to date
 as
