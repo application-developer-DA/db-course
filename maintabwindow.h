@@ -8,6 +8,7 @@ class MainTabWindow;
 
 class QSqlTableModel;
 class QSqlQueryModel;
+class QSqlRelationalTableModel;
 
 class MainTabWindow : public QWidget
 {
@@ -30,20 +31,25 @@ private slots:
     void on_coachFilterCheckbox_stateChanged(int state);
     void on_competitionsFilterCheckbox_stateChanged(int state);
     void on_multipleSportsFilterCheckbox_stateChanged(int state);
+    void on_sportsmenResetFilters_clicked();
+    void on_enableBuildingFilters_stateChanged(int state);
 
+    /* Sportsmen filters */
     void applySportFilter();
     void applyQualificationFilter();
     void applyCoachFilter();
     void applyDateFilter();
 
-    void on_sportsmenResetFilters_clicked();
+    /* Construction filters */
+    void applyPlacesFilter();
+    void applyTypeFilter();
 
 private:
     /* Tabs filling functions */
-    void fillSports();                      // Configure 1 tab
-    void fillSportsmen();                   // Configure 2 tab
-    void fillBuildingAndOrganizations();    // Configure 3 tab
-    void fillCompetitions();                // Configure 4 tab
+    void fillSports();                           // Configure 1 tab
+    void fillSportsmen();                        // Configure 2 tab
+    void fillConstructionsAndOrganizations();    // Configure 3 tab
+    void fillCompetitions();                     // Configure 4 tab
 
     Ui::MainTabWindow* ui;
 
@@ -51,6 +57,7 @@ private:
     QSqlQueryModel* coachesModel;
     QSqlQueryModel* sportsmenModel;
     QSqlQueryModel* sportsmanCoachesModel;
+    QSqlRelationalTableModel* constructionsModel;
 
     /* Auxiliary models */
     QSqlQueryModel* allCoaches;

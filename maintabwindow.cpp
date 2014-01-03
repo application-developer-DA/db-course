@@ -9,6 +9,22 @@ enum {
     Sport_Name
 };
 
+enum {
+    Organization_Id,
+    Organization_Name,
+    Organization_OrganizationAddress
+};
+
+enum {
+    Construction_Id,
+    Construction_OrganizationId,
+    Construction_Name,
+    Construction_Address,
+    Construction_Type,
+    Construction_Places,
+    Construction_Area
+};
+
 MainTabWindow::MainTabWindow(QWidget* parent)
     : QWidget(parent)
     , ui(new Ui::MainTabWindow)
@@ -16,6 +32,7 @@ MainTabWindow::MainTabWindow(QWidget* parent)
     , coachesModel(nullptr)
     , sportsmenModel(nullptr)
     , sportsmanCoachesModel(nullptr)
+    , constructionsModel(nullptr)
     , allCoaches(nullptr)
 {
     ui->setupUi(this);
@@ -34,6 +51,7 @@ void MainTabWindow::loggedIn(const QString& username)
     ui->sportsView->setCurrentIndex(sportsModel->index(0, 0));
 
     fillSportsmen();
+    fillConstructionsAndOrganizations();
 }
 
 void MainTabWindow::on_addSportBtn_clicked()
@@ -144,6 +162,34 @@ void MainTabWindow::fillSportsmen()
     buttonGroup->addButton(ui->multipleSportsFilterCheckbox);
 }
 
+void MainTabWindow::fillConstructionsAndOrganizations()
+{
+    constructionsModel = new QSqlRelationalTableModel(this);
+    constructionsModel->setTable("Building");
+    constructionsModel->setRelation(Construction_OrganizationId, QSqlRelation("Organization", "id", "name"));
+    constructionsModel->setHeaderData(Construction_OrganizationId, Qt::Horizontal, "Owner Organization");
+    constructionsModel->setHeaderData(Construction_Name, Qt::Horizontal, "Title");
+    constructionsModel->setHeaderData(Construction_Address, Qt::Horizontal, "Address");
+    constructionsModel->setHeaderData(Construction_Type, Qt::Horizontal, "Type");
+    constructionsModel->setHeaderData(Construction_Places, Qt::Horizontal, "Places");
+    constructionsModel->setHeaderData(Construction_Area, Qt::Horizontal, "Area");
+    constructionsModel->select();
+
+    ui->buildingsView->setModel(constructionsModel);
+    ui->buildingsView->setItemDelegate(new QSqlRelationalDelegate(this));
+    ui->buildingsView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->buildingsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->buildingsView->setColumnHidden(Construction_Id, true);
+    ui->buildingsView->horizontalHeader()->setStretchLastSection(true);
+
+    QSqlQueryModel* constructionType = new QSqlQueryModel(this);
+    constructionType->setQuery("SELECT DISTINCT building_type FROM Building");
+    ui->constructionTypeFilter->setModel(constructionType);
+    ui->constructionPlacesFilter->setValidator(new QIntValidator(1, 9999, this));
+    connect(ui->constructionTypeFilter, SIGNAL(currentIndexChanged(int)), SLOT(applyTypeFilter()));
+    connect(ui->constructionPlacesFilter, SIGNAL(editingFinished()), SLOT(applyPlacesFilter()));
+}
+
 void MainTabWindow::updateSportCoachesView()
 {
     QModelIndex index = ui->sportsView->currentIndex();
@@ -197,6 +243,19 @@ void MainTabWindow::applyDateFilter()
 
 }
 
+void MainTabWindow::applyPlacesFilter()
+{
+    int quantity = ui->constructionPlacesFilter->text().toInt();
+    constructionsModel->setFilter(QString("places >= %1").arg(quantity));
+    constructionsModel->select();
+}
+
+void MainTabWindow::applyTypeFilter()
+{
+    constructionsModel->setFilter(QString("building_type = '%1'").arg(ui->constructionTypeFilter->currentText()));
+    constructionsModel->select();
+}
+
 void MainTabWindow::on_sportFilterCheckbox_stateChanged(int state)
 {
     if (state)
@@ -234,3 +293,17 @@ void MainTabWindow::on_multipleSportsFilterCheckbox_stateChanged(int state)
     if (state == Qt::Checked)
         sportsmenModel->setQuery("EXEC ThoseWhoStudyMoreThanOneSport");
 }
+
+void MainTabWindow::on_enableBuildingFilters_stateChanged(int state)
+{
+    if (state == Qt::Checked) {
+        applyTypeFilter();
+    } else {
+        constructionsModel->setFilter("");
+        constructionsModel->select();
+    }
+
+    ui->constructionPlacesFilter->setEnabled(state);
+    ui->constructionTypeFilter->setEnabled(state);
+}
+
