@@ -309,7 +309,7 @@ in competitions</string>
            <item>
             <widget class="QPushButton" name="editSportsmanBtn">
              <property name="text">
-              <string>Edit Selected Sportman</string>
+              <string>Edit Selected Sportsman</string>
              </property>
             </widget>
            </item>

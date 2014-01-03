@@ -127,7 +127,13 @@ go
 create procedure SportsmenWithQualification
 	@sportTitle as varchar(30)
 as
-	select * from SportsmenWithSports where SportsmenWithSports.Title = @sportTitle
+	select PersonId,
+		   Firstname,
+		   Lastname,
+		   Middlename,
+		   Birthdate,
+		   Title
+	from SportsmenWithSports where SportsmenWithSports.Title = @sportTitle
 go
 
 /* Sportsmen who study more than one sports */

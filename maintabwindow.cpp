@@ -214,16 +214,22 @@ void MainTabWindow::applyDateFilter()
 
 void MainTabWindow::on_sportFilterCheckbox_stateChanged(int state)
 {
+    if (state)
+        applySportFilter();
     ui->sportComboBox->setEnabled(state);
 }
 
 void MainTabWindow::on_qualificationFilterCheckbox_stateChanged(int state)
 {
+    if (state)
+        applyQualificationFilter();
     ui->qualificationComboBox->setEnabled(state);
 }
 
 void MainTabWindow::on_coachFilterCheckbox_stateChanged(int state)
 {
+    if (state)
+        applyCoachFilter();
     ui->coachFilterComboBox->setEnabled(state);
 }
 
@@ -235,11 +241,6 @@ void MainTabWindow::on_competitionsFilterCheckbox_stateChanged(int state)
 
 void MainTabWindow::on_sportsmenResetFilters_clicked()
 {
-    ui->sportFilterCheckbox->setChecked(false);
-    ui->coachFilterCheckbox->setChecked(false);
-    ui->competitionsFilterCheckbox->setChecked(false);
-    ui->qualificationFilterCheckbox->setChecked(false);
-    ui->multipleSportsFilterCheckbox->setChecked(false);
     sportsmenModel->setQuery("SELECT DISTINCT * FROM SportsmenWithSports");
 }
 
