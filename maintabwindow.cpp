@@ -110,6 +110,17 @@ void MainTabWindow::fillSports()
     ui->coachesView->horizontalHeader()->setStretchLastSection(true);
 }
 
+void MainTabWindow::updateSportCoachesView()
+{
+    QModelIndex index = ui->sportsView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = sportsModel->record(index.row());
+        QString sportName = record.value(Sport_Name).toString();
+
+        coachesModel->setQuery(QString("EXEC CoachesSport @sportName = %1").arg(sportName));
+    }
+}
+
 void MainTabWindow::fillSportsmen()
 {
     sportsmenModel = new QSqlQueryModel(this);
@@ -162,6 +173,18 @@ void MainTabWindow::fillSportsmen()
     buttonGroup->addButton(ui->multipleSportsFilterCheckbox);
 }
 
+void MainTabWindow::updateSportsmanCoachesView()
+{
+    QModelIndex index = ui->sportsmenView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = sportsmenModel->record(index.row());
+
+        sportsmanCoachesModel->setQuery(QString("EXEC CoachesOfSportsman @firstname = %1, @lastname = %2")
+                                        .arg(record.value("Firstname").toString())
+                                        .arg(record.value("Lastname").toString()));
+    }
+}
+
 void MainTabWindow::fillConstructionsAndOrganizations()
 {
     constructionsModel = new QSqlRelationalTableModel(this);
@@ -190,27 +213,35 @@ void MainTabWindow::fillConstructionsAndOrganizations()
     connect(ui->constructionPlacesFilter, SIGNAL(editingFinished()), SLOT(applyPlacesFilter()));
 }
 
-void MainTabWindow::updateSportCoachesView()
+void MainTabWindow::on_addConstruction_clicked()
 {
-    QModelIndex index = ui->sportsView->currentIndex();
-    if (index.isValid()) {
-        QSqlRecord record = sportsModel->record(index.row());
-        QString sportName = record.value(Sport_Name).toString();
-
-        coachesModel->setQuery(QString("EXEC CoachesSport @sportName = %1").arg(sportName));
-    }
+    int row = constructionsModel->rowCount();
+    constructionsModel->insertRow(row);
+    QModelIndex index = constructionsModel->index(row, Construction_Name);
+    ui->buildingsView->setCurrentIndex(index);
+    ui->buildingsView->edit(index);
 }
 
-void MainTabWindow::updateSportsmanCoachesView()
+void MainTabWindow::on_deleteConstruction_clicked()
 {
-    QModelIndex index = ui->sportsmenView->currentIndex();
-    if (index.isValid()) {
-        QSqlRecord record = sportsmenModel->record(index.row());
+    QModelIndex index = ui->buildingsView->currentIndex();
+    if (!index.isValid())
+        return;
 
-        sportsmanCoachesModel->setQuery(QString("EXEC CoachesOfSportsman @firstname = %1, @lastname = %2")
-                                        .arg(record.value("Firstname").toString())
-                                        .arg(record.value("Lastname").toString()));
+    QSqlDatabase::database().transaction();
+    QSqlRecord record = constructionsModel->record(index.row());
+    QString name = record.value(Construction_Name).toString();
+    int r = QMessageBox::warning(this, tr("Delete Sport Construcion"), tr("Delete %1 and all connected tables?").arg(name),
+                                 QMessageBox::Yes | QMessageBox::No);
+    if (r == QMessageBox::No) {
+        QSqlDatabase::database().rollback();
+        return;
     }
+    constructionsModel->removeRow(index.row());
+    constructionsModel->submitAll();
+    QSqlDatabase::database().commit();
+
+    ui->buildingsView->setFocus();
 }
 
 void MainTabWindow::applySportFilter()

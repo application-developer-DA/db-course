@@ -470,14 +470,14 @@ in competitions</string>
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="addBuilding">
+           <widget class="QPushButton" name="addConstruction">
             <property name="text">
              <string>Add Construction</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="deleteConstruction">
             <property name="text">
              <string>Delete Selected</string>
             </property>
