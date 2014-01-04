@@ -30,12 +30,12 @@ private slots:
     void updateSportsmanCoachesView();
     void updateWinnersView();
 
-    void on_sportFilterCheckbox_stateChanged(int state);
-    void on_qualificationFilterCheckbox_stateChanged(int state);
-    void on_coachFilterCheckbox_stateChanged(int state);
-    void on_competitionsFilterCheckbox_stateChanged(int state);
-    void on_multipleSportsFilterCheckbox_stateChanged(int state);
-    void on_sportsmenResetFilters_clicked();
+    void on_enableSportsmenFilters_stateChanged(int state);
+    void on_sportsmenSportFilter_toggled(bool checked);
+    void on_sportsmenQualificationFilter_toggled(bool checked);
+    void on_sportsmenCoachFilter_toggled(bool checked);
+    void on_sportsmenCompetitionFilter_toggled(bool checked);
+    void on_sportsmenMultipleSportsFilter_toggled(bool checked);
 
     void on_enableBuildingFilters_stateChanged(int state);
     void on_constructionTypeFilter_toggled(bool checked);
@@ -74,6 +74,7 @@ private:
 
     QList<QWidget*> competitionFilterWidgets;
     QList<QWidget*> constructionFilterWidgets;
+    QList<QWidget*> sportsmenFilterWidgets;
 
     Ui::MainTabWindow* ui;
 

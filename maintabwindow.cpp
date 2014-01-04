@@ -135,36 +135,37 @@ void MainTabWindow::fillSportsmen()
     ui->sportsmanCoachesView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->sportsmanCoachesView->horizontalHeader()->setStretchLastSection(true);
 
-    ui->sportComboBox->setModel(sportsModel);
-    ui->sportComboBox->setModelColumn(Sport_Name);
-    connect(ui->sportComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanSportFilter()));
+    ui->sportsmenSportCombobox->setModel(sportsModel);
+    ui->sportsmenSportCombobox->setModelColumn(Sport_Name);
+    connect(ui->sportsmenSportCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanSportFilter()));
 
     QSqlQueryModel* experienceModel = new QSqlQueryModel(this);
     experienceModel->setQuery("SELECT title FROM Experience GROUP BY title");
-    ui->qualificationComboBox->setModel(experienceModel);
-    ui->qualificationComboBox->setModelColumn(0);
-    connect(ui->qualificationComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanQualificationFilter()));
+    ui->sportsmenQualificationCombobox->setModel(experienceModel);
+    ui->sportsmenQualificationCombobox->setModelColumn(0);
+    connect(ui->sportsmenQualificationCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanQualificationFilter()));
 
     allCoaches = new QSqlQueryModel(this);
     allCoaches->setQuery("SELECT DISTINCT [CoachId] AS Id, [Coach Firstname] AS Firstname, [Coach Lastname] AS Lastname FROM SportsmenWithCoaches");
-    ui->coachFilterComboBox->setModel(allCoaches);
-    ui->coachFilterComboBox->setModelColumn(2);
-    connect(ui->coachFilterComboBox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanCoachFilter()));
+    ui->sportsmenCoachCombobox->setModel(allCoaches);
+    ui->sportsmenCoachCombobox->setModelColumn(2);
+    connect(ui->sportsmenCoachCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanCoachFilter()));
 
     QDate today = QDate::currentDate();
-    ui->startDateEdit->setCalendarPopup(true);
-    ui->startDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
-    ui->endDateEdit->setCalendarPopup(true);
-    ui->endDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
-    connect(ui->startDateEdit, SIGNAL(dateChanged(QDate)), SLOT(applySportsmanDateFilter()));
-    connect(ui->endDateEdit, SIGNAL(dateChanged(QDate)), SLOT(applySportsmanDateFilter()));
+    ui->sportsmenStartDateEdit->setCalendarPopup(true);
+    ui->sportsmenStartDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    ui->sportsmenEndDateEdit->setCalendarPopup(true);
+    ui->sportsmenEndDateEdit->setDateRange(today.addDays(-365*2), today.addDays(365*2));
+    connect(ui->sportsmenStartDateEdit, SIGNAL(dateChanged(QDate)), SLOT(applySportsmanDateFilter()));
+    connect(ui->sportsmenEndDateEdit, SIGNAL(dateChanged(QDate)), SLOT(applySportsmanDateFilter()));
 
-    QButtonGroup* buttonGroup = new QButtonGroup(this);
-    buttonGroup->addButton(ui->sportFilterCheckbox);
-    buttonGroup->addButton(ui->qualificationFilterCheckbox);
-    buttonGroup->addButton(ui->coachFilterCheckbox);
-    buttonGroup->addButton(ui->competitionsFilterCheckbox);
-    buttonGroup->addButton(ui->multipleSportsFilterCheckbox);
+    sportsmenFilterWidgets << ui->sportsmenSportFilter << ui->sportsmenSportCombobox
+                           << ui->sportsmenCoachFilter << ui->sportsmenCoachCombobox
+                           << ui->sportsmenQualificationFilter << ui->sportsmenQualificationCombobox
+                           << ui->sportsmenCompetitionFilter << ui->sportsmenStartDateEdit << ui->sportsmenEndDateEdit
+                           << ui->sportsmenMultipleSportsFilter;
+    foreach (QWidget* widget, sportsmenFilterWidgets)
+        widget->hide();
 }
 
 void MainTabWindow::updateSportsmanCoachesView()
@@ -287,13 +288,13 @@ void MainTabWindow::updateWinnersView()
 
 void MainTabWindow::applySportsmanSportFilter()
 {
-    QString sportName = ui->sportComboBox->currentText();
+    QString sportName = ui->sportsmenSportCombobox->currentText();
     sportsmenModel->setQuery(QString("EXEC SportsmenWithParticularSport @sportName = %1").arg(sportName));
 }
 
 void MainTabWindow::applySportsmanCoachFilter()
 {
-    int row = ui->coachFilterComboBox->currentIndex();
+    int row = ui->sportsmenCoachCombobox->currentIndex();
     QString firstname = allCoaches->record(row).value("Firstname").toString();
     QString lastname = allCoaches->record(row).value("Lastname").toString();
     sportsmenModel->setQuery(QString("EXEC SportsmenOfCoach @firstname = %1, @lastname = %2").arg(firstname).arg(lastname));
@@ -301,14 +302,14 @@ void MainTabWindow::applySportsmanCoachFilter()
 
 void MainTabWindow::applySportsmanQualificationFilter()
 {
-    QString title = ui->qualificationComboBox->currentText();
+    QString title = ui->sportsmenQualificationCombobox->currentText();
     sportsmenModel->setQuery(QString("EXEC SportsmenWithQualification @sportTitle = %1").arg(title));
 }
 
 void MainTabWindow::applySportsmanDateFilter()
 {
-    QDate startDate = ui->startDateEdit->date();
-    QDate endDate = ui->endDateEdit->date();
+    QDate startDate = ui->sportsmenStartDateEdit->date();
+    QDate endDate = ui->sportsmenEndDateEdit->date();
     sportsmenModel->setQuery(QString("EXEC ThoseWhoDidntTakePartInCompetitions @from = '%1', @to = '%2'")
                              .arg(startDate.toString("yyyy-MM-dd"))
                              .arg(endDate.toString("yyyy-MM-dd")));
@@ -367,41 +368,45 @@ void MainTabWindow::applyCompetitionDateFilter()
                                 .arg(endDate.toString("yyyy-MM-dd")));
 }
 
-void MainTabWindow::on_sportFilterCheckbox_stateChanged(int state)
+void MainTabWindow::on_enableSportsmenFilters_stateChanged(int state)
 {
-    if (state)
+    if (state != Qt::Checked)
+        sportsmenModel->setQuery("SELECT DISTINCT Firstname, Lastname, Middlename, Birthdate FROM SportsmenWithSports");
+
+    foreach (QWidget* widget, sportsmenFilterWidgets)
+        widget->setVisible(state == Qt::Checked);
+}
+
+void MainTabWindow::on_sportsmenSportFilter_toggled(bool checked)
+{
+    if (checked)
         applySportsmanSportFilter();
-    ui->sportComboBox->setEnabled(state);
+    ui->sportsmenSportCombobox->setEnabled(checked);
 }
 
-void MainTabWindow::on_qualificationFilterCheckbox_stateChanged(int state)
+void MainTabWindow::on_sportsmenQualificationFilter_toggled(bool checked)
 {
-    if (state)
+    if (checked)
         applySportsmanQualificationFilter();
-    ui->qualificationComboBox->setEnabled(state);
+    ui->sportsmenQualificationCombobox->setEnabled(checked);
 }
 
-void MainTabWindow::on_coachFilterCheckbox_stateChanged(int state)
+void MainTabWindow::on_sportsmenCoachFilter_toggled(bool checked)
 {
-    if (state)
+    if (checked)
         applySportsmanCoachFilter();
-    ui->coachFilterComboBox->setEnabled(state);
+    ui->sportsmenCoachCombobox->setEnabled(checked);
 }
 
-void MainTabWindow::on_competitionsFilterCheckbox_stateChanged(int state)
+void MainTabWindow::on_sportsmenCompetitionFilter_toggled(bool checked)
 {
-    ui->startDateEdit->setEnabled(state);
-    ui->endDateEdit->setEnabled(state);
+    ui->sportsmenStartDateEdit->setEnabled(checked);
+    ui->sportsmenEndDateEdit->setEnabled(checked);
 }
 
-void MainTabWindow::on_sportsmenResetFilters_clicked()
+void MainTabWindow::on_sportsmenMultipleSportsFilter_toggled(bool checked)
 {
-    sportsmenModel->setQuery("SELECT DISTINCT Firstname, Lastname, Middlename, Birthdate FROM SportsmenWithSports");
-}
-
-void MainTabWindow::on_multipleSportsFilterCheckbox_stateChanged(int state)
-{
-    if (state == Qt::Checked)
+    if (checked)
         sportsmenModel->setQuery("EXEC ThoseWhoStudyMoreThanOneSport");
 }
 
