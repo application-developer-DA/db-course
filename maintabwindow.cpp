@@ -31,7 +31,7 @@ MainTabWindow::~MainTabWindow()
 
 void MainTabWindow::login()
 {
-    QSqlQuery userQuery("SELECT CURRENT_USER");
+    QSqlQuery userQuery("SELECT User_Name()");
     while (userQuery.next()) {
         QString userName = userQuery.value(0).toString();
         ui->loginLabel->setText(QString("You logged in as %1").arg(userName));
@@ -52,6 +52,8 @@ void MainTabWindow::on_addSportBtn_clicked()
     QModelIndex index = sportsModel->index(row, Sport_Name);
     ui->sportsView->setCurrentIndex(index);
     ui->sportsView->edit(index);
+
+    // connect(ui->sportsView, &QTableView::entered, [=]() { sportsModel->select(); });
 }
 
 void MainTabWindow::on_deleteSportBtn_clicked()
@@ -75,6 +77,7 @@ void MainTabWindow::on_deleteSportBtn_clicked()
 
     updateSportCoachesView();
     ui->sportsView->setFocus();
+    sportsModel->select();
 }
 
 void MainTabWindow::fillSports()
