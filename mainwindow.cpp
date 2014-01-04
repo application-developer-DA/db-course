@@ -42,7 +42,7 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
     }
 
     ui->stackedWidget->setCurrentWidget(m_tabWindow);
-    m_tabWindow->loggedIn(authData.username);
+    m_tabWindow->login();
 }
 
 void MainWindow::on_action_Exit_triggered()

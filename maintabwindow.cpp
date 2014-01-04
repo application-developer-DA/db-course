@@ -29,9 +29,13 @@ MainTabWindow::~MainTabWindow()
     delete ui;
 }
 
-void MainTabWindow::loggedIn(const QString& username)
+void MainTabWindow::login()
 {
-    ui->loginLabel->setText(QString("You logged in as %1").arg(username));
+    QSqlQuery userQuery("SELECT CURRENT_USER");
+    while (userQuery.next()) {
+        QString userName = userQuery.value(0).toString();
+        ui->loginLabel->setText(QString("You logged in as %1").arg(userName));
+    }
 
     fillSports();
     ui->sportsView->setCurrentIndex(sportsModel->index(0, 0));

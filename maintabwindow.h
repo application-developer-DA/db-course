@@ -20,7 +20,7 @@ public:
     explicit MainTabWindow(QWidget* parent = nullptr);
     ~MainTabWindow();
 
-    void loggedIn(const QString& username);
+    void login();
 
 private slots:
     void on_addSportBtn_clicked();
