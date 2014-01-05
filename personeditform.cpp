@@ -17,6 +17,7 @@ enum {
 
 PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     : QDialog(parent)
+    , displayCoachWidgets(isCoach)
 {
     firstnameEdit = new QLineEdit;
     QLabel* firstnameLabel = new QLabel(tr("Name:"));
@@ -142,4 +143,7 @@ void PersonEditForm::deletePerson()
     mapper->setCurrentIndex(qMin(row, personModel->rowCount() - 1));
 
     updateExperienceModel();
+
+    if (displayCoachWidgets)
+        accept();
 }

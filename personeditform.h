@@ -21,6 +21,8 @@ private slots:
 private:
     void updateExperienceModel();
 
+    bool displayCoachWidgets;
+
     QDataWidgetMapper* mapper;
     QSqlTableModel* personModel;
     QSqlRelationalTableModel* experienceModel;
