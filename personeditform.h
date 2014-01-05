@@ -21,6 +21,8 @@ private slots:
 private:
     QDataWidgetMapper* mapper;
     QSqlTableModel* personModel;
+    QSqlRelationalTableModel* experienceModel;
+    QTableView* experienceView;
 
     QLineEdit* firstnameEdit;
     QLineEdit* lastnameEdit;

@@ -8,6 +8,13 @@ enum {
     Person_Birthdate
 };
 
+enum {
+    Experience_Id,
+    Experience_PersonId,
+    Experience_SportId,
+    Experience_Title
+};
+
 PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     : QDialog(parent)
 {
@@ -71,7 +78,29 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     personLayout->addWidget(birthLabel, 4, 0);
     personLayout->addWidget(birthEdit, 4, 1);
     personLayout->addWidget(buttonBox, 6, 0, 1, 3);
-    setLayout(personLayout);
+
+    experienceModel = new QSqlRelationalTableModel(this);
+    experienceModel->setTable("Experience");
+    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
+    experienceModel->setRelation(Experience_SportId, QSqlRelation("Sport", "id", "name"));
+    experienceModel->select();
+
+    experienceView = new QTableView;
+    experienceView->setModel(experienceModel);
+    experienceView->setItemDelegate(new QSqlRelationalDelegate(this));
+    experienceView->setSelectionMode(QAbstractItemView::SingleSelection);
+    experienceView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    experienceView->setColumnHidden(Experience_Id, true);
+    experienceView->setColumnHidden(Experience_PersonId, true);
+
+    QGridLayout* experienceLayout = new QGridLayout;
+    experienceLayout->addWidget(experienceView);
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(personLayout);
+    mainLayout->addLayout(experienceLayout);
+
+    setLayout(mainLayout);
 
     setWindowTitle(tr("Edit Person Information"));
 }
@@ -94,6 +123,9 @@ void PersonEditForm::addPerson()
     middlenameEdit->clear();
     birthEdit->setDate(QDate::currentDate());
     firstnameEdit->setFocus();
+
+    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
+    experienceModel->select();
 }
 
 void PersonEditForm::deletePerson()
@@ -102,4 +134,7 @@ void PersonEditForm::deletePerson()
     personModel->removeRow(row);
     mapper->submit();
     mapper->setCurrentIndex(qMin(row, personModel->rowCount() - 1));
+
+    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
+    experienceModel->select();
 }
