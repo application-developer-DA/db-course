@@ -81,9 +81,10 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
 
     experienceModel = new QSqlRelationalTableModel(this);
     experienceModel->setTable("Experience");
-    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
     experienceModel->setRelation(Experience_SportId, QSqlRelation("Sport", "id", "name"));
-    experienceModel->select();
+    experienceModel->setHeaderData(Experience_SportId, Qt::Horizontal, "Sport");
+    experienceModel->setHeaderData(Experience_Title, Qt::Horizontal, "Title");
+    updateExperienceModel();
 
     experienceView = new QTableView;
     experienceView->setModel(experienceModel);
@@ -105,6 +106,12 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     setWindowTitle(tr("Edit Person Information"));
 }
 
+void PersonEditForm::updateExperienceModel()
+{
+    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
+    experienceModel->select();
+}
+
 void PersonEditForm::done(int result)
 {
     mapper->submit();
@@ -124,8 +131,7 @@ void PersonEditForm::addPerson()
     birthEdit->setDate(QDate::currentDate());
     firstnameEdit->setFocus();
 
-    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
-    experienceModel->select();
+    updateExperienceModel();
 }
 
 void PersonEditForm::deletePerson()
@@ -135,6 +141,5 @@ void PersonEditForm::deletePerson()
     mapper->submit();
     mapper->setCurrentIndex(qMin(row, personModel->rowCount() - 1));
 
-    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
-    experienceModel->select();
+    updateExperienceModel();
 }

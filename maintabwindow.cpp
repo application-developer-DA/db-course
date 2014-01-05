@@ -494,3 +494,18 @@ void MainTabWindow::on_editCoachBtn_clicked()
     form.exec();
     updateSportCoachesView();
 }
+
+void MainTabWindow::on_editSportsmanBtn_clicked()
+{
+    int sportsmanId = -1;
+    QModelIndex index = ui->sportsmenView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = sportsmenModel->record(index.row());
+        sportsmanId = record.value(0).toInt();
+    }
+
+    PersonEditForm form(sportsmanId, false, this);
+    form.exec();
+    updateSportsmanCoachesView();
+    // Update Sportsman View
+}

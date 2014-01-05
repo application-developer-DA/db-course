@@ -7,15 +7,15 @@ go
 create view AllCompetitions
 as
 select 
-	Competition.id [CompetitionId],
-	Competition.name [CompetitionName],
-	Competition.competition_date [CompetitionDate],
-	Sport.id [SportId],
-	Sport.name [SportName],
-	Building.id [BuildingId],
-	Building.name [BuildingName],
-	Organization.id [OrganizationId],
-	Organization.name [OrganizationName]
+	Competition.id [Competition Id],
+	Competition.name [Competition Name],
+	Competition.competition_date [Competition Date],
+	Sport.id [Sport Id],
+	Sport.name [Sport Name],
+	Building.id [Building Id],
+	Building.name [Building Name],
+	Organization.id [Organization Id],
+	Organization.name [Organization Name]
 from 
 	Competition
 inner join Sport on Competition.sport_id = Sport.id
@@ -26,14 +26,14 @@ go
 create view SportsmenWithSports
 as
 select 
-	Person.id [PersonId],
+	Person.id [Person Id],
 	Person.firstname [Firstname], 
 	Person.lastname [Lastname],
 	Person.middlename [Middlename],
 	Person.birthdate [Birthdate],
-	Sport.id [SportId],
+	Sport.id [Sport Id],
 	Sport.name [Sport],
-	Experience.id [ExperienceId],
+	Experience.id [Experience Id],
 	Experience.title [Title]
 from
 	Person 
@@ -44,11 +44,11 @@ go
 create view SportsmenWithCoaches
 as
 select
-	L.id [LearnerId],
+	L.id [Learner Id],
 	L.firstname [Learner Firstname], 
 	L.lastname [Learner Lastname],
 	L.middlename [Learner Middlename],
-	C.id [CoachId],
+	C.id [Coach Id],
 	C.firstname [Coach Firstname],
 	C.lastname [Coach Lastname],
 	C.middlename [Coach Middlename],
@@ -64,15 +64,15 @@ go
 create view AllParticipants
 as
 select
-	Person.id [PersonId],
+	Person.id [Person Id],
 	Person.firstname [Firstname],
 	Person.lastname [Lastname],
 	Person.middlename [Middlename],
-	Participant.id [ParticipantId],
+	Participant.id [Participant Id],
 	Participant.results [Scores],
-	Club.id [ClubId],
+	Club.id [Club Id],
 	Club.name [Club],
-	Competition.id [CompetitionId],
+	Competition.id [Competition Id],
 	Competition.competition_date [Competiton Date],
 	Competition.name [Competition Name]
 from 
@@ -120,7 +120,7 @@ create procedure SportsmenWithParticularSport
 	@sportName as varchar(30)
 as
 	select 
-		   [PersonId],
+		   [Person Id],
 		   [Firstname],
 		   [Lastname],
 		   [Middlename],
@@ -131,17 +131,19 @@ go
 /* Sportsmen who are trained by concreete coach */
 create procedure SportsmenOfCoach
 	@firstname as varchar(30),
-	@lastname as varchar(30)
+	@lastname as varchar(30),
+	@middlename as varchar(30)
 as
 	select 
-		   [LearnerId] AS Id,
+		   [Learner Id] AS Id,
 		   [Learner Firstname] AS Firstname,
 		   [Learner Lastname] AS Lastname,
 		   [Learner Middlename] AS Middlename
 	from SportsmenWithCoaches 
 	where 
 		SportsmenWithCoaches.[Coach Firstname] = @firstname
-		and SportsmenWithCoaches.[Coach Lastname ] = @lastname
+		and SportsmenWithCoaches.[Coach Lastname] = @lastname
+		and SportsmenWithCoaches.[Coach Middlename] = @middlename
 go
 
 /* Sportsmen who has qualification */
@@ -149,12 +151,12 @@ create procedure SportsmenWithQualification
 	@sportTitle as varchar(30)
 as
 	select 
-	       PersonId,
-		   Firstname,
-		   Lastname,
-		   Middlename,
-		   Birthdate,
-		   Title
+	       [Person Id],
+		   [Firstname],
+		   [Lastname],
+		   [Middlename],
+		   [Birthdate],
+		   [Title]
 	from SportsmenWithSports where SportsmenWithSports.Title = @sportTitle
 go
 
@@ -162,6 +164,7 @@ go
 create procedure ThoseWhoStudyMoreThanOneSport
 as
 	select 
+		SportsmenWithSports.Id [Id],
 		SportsmenWithSports.Firstname [Firstname],
 		SportsmenWithSports.Lastname [Lastname],
 		SportsmenWithSports.Middlename [Middlename],
@@ -174,16 +177,19 @@ go
 /* Coaches of sportsman */
 create procedure CoachesOfSportsman
 	@firstname as varchar(30),
-	@lastname as varchar(30)
+	@lastname as varchar(30),
+	@middlename as varchar(30)
 as
 	select distinct
-		SportsmenWithCoaches.[Coach Firstname] AS Firstname,
-		SportsmenWithCoaches.[Coach Lastname ] AS Lastname,
-		SportsmenWithCoaches.[Coach Middlename] AS Middlename
+		[Coach Id] AS Id
+		[Coach Firstname] AS Firstname,
+		[Coach Lastname ] AS Lastname,
+		[Coach Middlename] AS Middlename
 	from SportsmenWithCoaches
 	where
 		SportsmenWithCoaches.[Learner Firstname] = @firstname
 		and SportsmenWithCoaches.[Learner Lastname] = @lastname
+		and SportsmenWithCoaches.[Learner Middlename] = @middlename
 go
 
 /* Competitions between date */
@@ -191,9 +197,13 @@ create procedure CompetitionsBetweenDate
 	@from as date,
 	@to as date
 as
-	select 
-		AllCompetitions.CompetitionName,
-		AllCompetitions.CompetitionDate
+	select
+		[Competition Id],
+		[Competition Name],
+		[Competition Date],
+		[Sport Name],
+		[Building Name],
+		[Organization Name]
 	from AllCompetitions
 	where AllCompetitions.CompetitionDate between @from and @to
 go
@@ -203,9 +213,11 @@ create procedure CompetitionsByOrganization
 	@organizationName as varchar(30)
 as
 	select 
-		AllCompetitions.CompetitionName,
-		AllCompetitions.CompetitionDate,
-		AllCompetitions.OrganizationName
+		[Competition Id],
+		[Competition Name],
+		[Competition Date],
+		[Building Name],
+		[Organization Name]
 	from AllCompetitions
 	where AllCompetitions.OrganizationName = @organizationName
 go
@@ -215,8 +227,12 @@ create procedure CompetitionsInBuilding
 	@buildingName as varchar(30)
 as
 	select 
-		AllCompetitions.CompetitionName,
-		AllCompetitions.BuildingName
+		[Competition Id],
+		[Competition Name],
+		[Competition Date],
+		[Sport Name],
+		[Building Name],
+		[Organization Name]
 	from AllCompetitions
 	where AllCompetitions.BuildingName = @buildingName
 go
@@ -226,8 +242,12 @@ create procedure CompetitionsSport
 	@sportName as varchar(30)
 as
 	select 
-		AllCompetitions.CompetitionName,
-		AllCompetitions.SportName
+		[Competition Id],
+		[Competition Name],
+		[Competition Date],
+		[Sport Name],
+		[Building Name],
+		[Organization Name]
 	from AllCompetitions
 	where AllCompetitions.SportName = @sportName
 go
@@ -237,9 +257,10 @@ create procedure CoachesSport
 	@sportName as varchar(30)
 as
 	select distinct
-		SportsmenWithCoaches.[Coach Firstname] AS Firstname,
-		SportsmenWithCoaches.[Coach Lastname] AS Lastname,
-		SportsmenWithCoaches.[Coach Middlename] AS Middlename
+		[CoachId] AS Id
+		[Coach Firstname] AS Firstname,
+		[Coach Lastname] AS Lastname,
+		[Coach Middlename] AS Middlename
 	from SportsmenWithCoaches
 	where SportsmenWithCoaches.Sport = @sportName
 go
@@ -250,7 +271,7 @@ create procedure CompetitonsByOrganizationBetweenDate
 	@to date
 as
 	select
-		AllCompetitions.OrganizationName,
+		AllCompetitions.OrganizationName [Organization Name],
 		COUNT(OrganizationName) AS AmountOfCompetitions
 	from AllCompetitions
 	where AllCompetitions.CompetitionDate between @from and @to
@@ -264,10 +285,12 @@ create procedure CompetitionsOnBuildingBetweenDate
 	@to date
 as
 	select
-		AllCompetitions.BuildingName,
-		AllCompetitions.CompetitionName,
-		AllCompetitions.SportName,
-		AllCompetitions.CompetitionDate
+		[Competition Id],
+		[Competition Name],
+		[Competition Date],
+		[Sport Name],
+		[Building Name],
+		[Organization Name]
 	from AllCompetitions
 	where
 		AllCompetitions.CompetitionDate between @from and @to
@@ -278,10 +301,11 @@ create procedure CompetitionWinners
 	@competitionName varchar(30)
 as
 	select 
-		AllParticipants.Firstname,
-		AllParticipants.Lastname,
-		AllParticipants.Middlename,
-		AllParticipants.Scores
+		[Person Id],
+		[Firstname],
+		[Lastname],
+		[Middlename],
+		[Scores]
 	from AllParticipants
 	where AllParticipants.Scores > 75
 	and	  AllParticipants.[Competition Name] = @competitionName
@@ -293,7 +317,7 @@ create procedure ClubSportsmensAmountInCompetitions
 	@to date
 as
 	select 
-		AllParticipants.Club,
+		AllParticipants.Club [Club Name],
 		COUNT(*) AS AmountOfSportsmen
 	from AllParticipants
 	where AllParticipants.[Competiton Date] between @from and @to
@@ -306,9 +330,10 @@ create procedure ThoseWhoDidntTakePartInCompetitions
 	@to date
 as
 	select 
-		SportsmenWithSports.Firstname,
-		SportsmenWithSports.Lastname,
-		SportsmenWithSports.Middlename
+		[Person Id],
+		[Firstname],
+		[Lastname],
+		[Middlename]
 	from SportsmenWithSports
 	where not exists
 		(select * from AllParticipants

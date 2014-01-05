@@ -19,6 +19,8 @@ private slots:
     void deletePerson();
 
 private:
+    void updateExperienceModel();
+
     QDataWidgetMapper* mapper;
     QSqlTableModel* personModel;
     QSqlRelationalTableModel* experienceModel;
