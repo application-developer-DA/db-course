@@ -15,12 +15,15 @@ public:
     void done(int result);
 
 private slots:
+    void updateExperienceModel();
+
     void addPerson();
     void deletePerson();
 
-private:
-    void updateExperienceModel();
+    void addExperience();
+    void deleteExperience();
 
+private:
     bool displayCoachWidgets;
 
     QDataWidgetMapper* mapper;

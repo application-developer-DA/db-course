@@ -87,6 +87,8 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     experienceModel->setHeaderData(Experience_Title, Qt::Horizontal, "Title");
     updateExperienceModel();
 
+    // connect(experienceModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(updateExperienceModel()));
+
     experienceView = new QTableView;
     experienceView->setModel(experienceModel);
     experienceView->setItemDelegate(new QSqlRelationalDelegate(this));
@@ -94,12 +96,24 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     experienceView->setSelectionBehavior(QAbstractItemView::SelectRows);
     experienceView->setColumnHidden(Experience_Id, true);
     experienceView->setColumnHidden(Experience_PersonId, true);
+    experienceView->horizontalHeader()->setStretchLastSection(true);
+
+    QPushButton* addExperienceButton = new QPushButton(tr("Add"));
+    QPushButton* deleteExperienceButton = new QPushButton(tr("Remove"));
+
+    connect(addExperienceButton, SIGNAL(clicked()), SLOT(addExperience()));
+    connect(deleteExperienceButton, SIGNAL(clicked()), SLOT(deleteExperience()));
 
     QGridLayout* experienceLayout = new QGridLayout;
-    experienceLayout->addWidget(experienceView);
+    experienceLayout->addWidget(experienceView, 1, 0, 1, 3);
+    experienceLayout->addWidget(deleteExperienceButton, 2, 1);
+    experienceLayout->addWidget(addExperienceButton, 2, 2);
+
+    QSpacerItem* spacer = new QSpacerItem(10, 20);
 
     QVBoxLayout* mainLayout = new QVBoxLayout;
     mainLayout->addLayout(personLayout);
+    mainLayout->addItem(spacer);
     mainLayout->addLayout(experienceLayout);
 
     setLayout(mainLayout);
@@ -146,4 +160,25 @@ void PersonEditForm::deletePerson()
 
     if (displayCoachWidgets)
         accept();
+}
+
+void PersonEditForm::addExperience()
+{
+    int row = experienceModel->rowCount();
+    experienceModel->insertRow(row);
+
+    QModelIndex index = experienceModel->index(row, Experience_PersonId);
+    experienceModel->setData(index, personModel->record(mapper->currentIndex()).value(Person_Id).toInt());
+
+    index = experienceModel->index(row, Experience_SportId);
+    experienceView->setCurrentIndex(index);
+    experienceView->edit(index);
+}
+
+void PersonEditForm::deleteExperience()
+{
+    int row = experienceView->currentIndex().row();
+    experienceModel->removeRow(row);
+
+    updateExperienceModel();
 }
