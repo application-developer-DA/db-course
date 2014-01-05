@@ -271,11 +271,12 @@ create procedure CompetitonsByOrganizationBetweenDate
 	@to date
 as
 	select
+		[Organization Id],
 		[Organization Name],
 		COUNT([Organization Name]) AS AmountOfCompetitions
 	from AllCompetitions
 	where AllCompetitions.[Competition Date] between @from and @to
-	group by AllCompetitions.[Organization Name]
+	group by AllCompetitions.[Organization Id], AllCompetitions.[Organization Name]
 go
 
 /* Competitions on building between date */
@@ -316,11 +317,12 @@ create procedure ClubSportsmensAmountInCompetitions
 	@to date
 as
 	select 
-		AllParticipants.Club [Club Name],
+		AllParticipants.[Club Id]
+		AllParticipants.Club,
 		COUNT(*) AS AmountOfSportsmen
 	from AllParticipants
 	where AllParticipants.[Competiton Date] between @from and @to
-	group by AllParticipants.Club
+	group by AllParticipants.[Club Id], AllParticipants.Club
 go
 
 /* Sportsmen who didn't take part in competitions between date */
