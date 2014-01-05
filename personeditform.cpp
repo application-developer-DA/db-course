@@ -109,7 +109,7 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
 
 void PersonEditForm::updateExperienceModel()
 {
-    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record().value(Person_Id).toInt()));
+    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record(mapper->currentIndex()).value(Person_Id).toInt()));
     experienceModel->select();
 }
 

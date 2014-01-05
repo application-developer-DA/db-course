@@ -10,12 +10,13 @@ enum {
     Sport_Name
 };
 
-static const QString kAllSportsmenQuery           = "SELECT id AS Id, Firstname AS firstname, lastname AS Lastname, middlename AS Middlename, birthdate AS Birthdate FROM Person";
+static const QString kAllSportsmenQuery           = "SELECT id AS Id, firstname AS Firstname, lastname AS Lastname, middlename AS Middlename, birthdate AS Birthdate FROM Person";
 static const QString kAllSportConstructionsQuery  = "SELECT [Building Name], [Competition Name], [Sport Name], [Organization Name] FROM AllCompetitions";
 static const QString kAllCompetitionsQuery        = "SELECT [Competition Id], [Competition Name], [Competition Date], [Sport Name], [Building Name], [Organization Name] FROM AllCompetitions";
 
 static inline void setDefaultViewParameters(QTableView* view)
 {
+    view->setColumnHidden(0, true);
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->horizontalHeader()->setStretchLastSection(true);
@@ -176,12 +177,11 @@ void MainTabWindow::updateSportsmanCoachesView()
     QModelIndex index = ui->sportsmenView->currentIndex();
     if (index.isValid()) {
         QSqlRecord record = sportsmenModel->record(index.row());
-        QStringList coach = record.value(0).toString().split(' ');
-
-        Q_ASSERT(coach.size() == 3);
-
-        sportsmanCoachesModel->setQuery(QString("EXEC CoachesOfSportsman @firstname = %1, @lastname = %2, @middlename = %3")
-                                        .arg(coach[0]).arg(coach[1]).arg(coach[2]));
+        QString query = QString("EXEC CoachesOfSportsman @firstname = '%1', @lastname = '%2', @middlename = '%3'")
+                .arg(record.value("Firstname").toString())
+                .arg(record.value("Lastname").toString())
+                .arg(record.value("Middlename").toString());
+        sportsmanCoachesModel->setQuery(query);
     }
 }
 
@@ -276,7 +276,7 @@ void MainTabWindow::updateWinnersView()
     if (index.isValid()) {
         QSqlRecord record = competitionsModel->record(index.row());
 
-        competitionWinnersModel->setQuery(QString("EXEC CompetitionWinners @competitionName = %1")
+        competitionWinnersModel->setQuery(QString("EXEC CompetitionWinners @competitionName = '%1'")
                                         .arg(record.value("Competition Name").toString()));
     }
 }
@@ -284,7 +284,7 @@ void MainTabWindow::updateWinnersView()
 void MainTabWindow::applySportsmanSportFilter()
 {
     QString sportName = ui->sportsmenSportCombobox->currentText();
-    sportsmenModel->setQuery(QString("EXEC SportsmenWithParticularSport @sportName = %1").arg(sportName));
+    sportsmenModel->setQuery(QString("EXEC SportsmenWithParticularSport @sportName = '%1'").arg(sportName));
 }
 
 void MainTabWindow::applySportsmanCoachFilter()
@@ -293,14 +293,14 @@ void MainTabWindow::applySportsmanCoachFilter()
     QStringList coach = record.split(' ');
 
     Q_ASSERT(coach.size() == 3);
-    sportsmenModel->setQuery(QString("EXEC SportsmenOfCoach @firstname = %1, @lastname = %2, @middlename = %3")
+    sportsmenModel->setQuery(QString("EXEC SportsmenOfCoach @firstname = '%1', @lastname = '%2', @middlename = '%3'")
                              .arg(coach[0]).arg(coach[1]).arg(coach[2]));
 }
 
 void MainTabWindow::applySportsmanQualificationFilter()
 {
     QString title = ui->sportsmenQualificationCombobox->currentText();
-    sportsmenModel->setQuery(QString("EXEC SportsmenWithQualification @sportTitle = %1").arg(title));
+    sportsmenModel->setQuery(QString("EXEC SportsmenWithQualification @sportTitle = '%1'").arg(title));
 }
 
 void MainTabWindow::applySportsmanDateFilter()
@@ -320,7 +320,7 @@ void MainTabWindow::applyConstructionPlacesFilter()
 
 void MainTabWindow::applyConstructionTypeFilter()
 {
-    constructionsModel->setQuery(QString("EXEC BuildingByType @buildingType = %1").arg(ui->constructionTypeFilterCombobox->currentText()));
+    constructionsModel->setQuery(QString("EXEC BuildingByType @buildingType = '%1'").arg(ui->constructionTypeFilterCombobox->currentText()));
 }
 
 void MainTabWindow::applyConstructionCompetitionFilter()
@@ -350,7 +350,7 @@ void MainTabWindow::applyCompetitionOrganizerFilter()
 void MainTabWindow::applyCompetitionSportFilter()
 {
     QString sport = ui->competitionSportFilterCombobox->currentText();
-    competitionsModel->setQuery(QString("EXEC CompetitionsSport @sportName = %1").arg(sport));
+    competitionsModel->setQuery(QString("EXEC CompetitionsSport @sportName = '%1'").arg(sport));
 }
 
 void MainTabWindow::applyCompetitionDateFilter()

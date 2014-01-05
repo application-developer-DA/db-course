@@ -1,23 +1,23 @@
-use master
-go
+USE [master]
+GO
 
-use SportInfrastructure
-go
+USE [SportInfrastructure]
+GO
 
 create view AllCompetitions
 as
-select 
-	Competition.id [Competition Id],
-	Competition.name [Competition Name],
-	Competition.competition_date [Competition Date],
-	Sport.id [Sport Id],
-	Sport.name [Sport Name],
-	Building.id [Building Id],
-	Building.name [Building Name],
-	Organization.id [Organization Id],
-	Organization.name [Organization Name]
-from 
-	Competition
+select
+        Competition.id [Competition Id],
+        Competition.name [Competition Name],
+        Competition.competition_date [Competition Date],
+        Sport.id [Sport Id],
+        Sport.name [Sport Name],
+        Building.id [Building Id],
+        Building.name [Building Name],
+        Organization.id [Organization Id],
+        Organization.name [Organization Name]
+from
+        Competition
 inner join Sport on Competition.sport_id = Sport.id
 inner join Building on Building.id = Competition.building_id
 inner join Organization on Organization.id = Building.organization_id
@@ -164,13 +164,13 @@ go
 create procedure ThoseWhoStudyMoreThanOneSport
 as
 	select 
-		SportsmenWithSports.Id [Id],
-		SportsmenWithSports.Firstname [Firstname],
-		SportsmenWithSports.Lastname [Lastname],
-		SportsmenWithSports.Middlename [Middlename],
+		SportsmenWithSports.[Person Id],
+		SportsmenWithSports.[Firstname],
+		SportsmenWithSports.[Lastname],
+		SportsmenWithSports.[Middlename],
 		COUNT(SportsmenWithSports.Sport)
 	from SportsmenWithSports
-	group by SportsmenWithSports.Firstname, SportsmenWithSports.Lastname, SportsmenWithSports.Middlename
+	group by SportsmenWithSports.[Person Id], SportsmenWithSports.[Firstname], SportsmenWithSports.[Lastname], SportsmenWithSports.[Middlename]
 	having count(SportsmenWithSports.Sport) > 1
 go
 
@@ -181,7 +181,7 @@ create procedure CoachesOfSportsman
 	@middlename as varchar(30)
 as
 	select distinct
-		[Coach Id] AS Id
+		[Coach Id] AS Id,
 		[Coach Firstname] AS Firstname,
 		[Coach Lastname ] AS Lastname,
 		[Coach Middlename] AS Middlename
@@ -205,7 +205,7 @@ as
 		[Building Name],
 		[Organization Name]
 	from AllCompetitions
-	where AllCompetitions.CompetitionDate between @from and @to
+	where [Competition Date] between @from and @to
 go
 
 /* Competitions by organization */
@@ -219,7 +219,7 @@ as
 		[Building Name],
 		[Organization Name]
 	from AllCompetitions
-	where AllCompetitions.OrganizationName = @organizationName
+	where [Organization Name] = @organizationName
 go
 
 /* Competitions in specific building */
@@ -234,7 +234,7 @@ as
 		[Building Name],
 		[Organization Name]
 	from AllCompetitions
-	where AllCompetitions.BuildingName = @buildingName
+	where [Building Name] = @buildingName
 go
 
 /* Competitions by specific sport */
@@ -249,7 +249,7 @@ as
 		[Building Name],
 		[Organization Name]
 	from AllCompetitions
-	where AllCompetitions.SportName = @sportName
+	where [Sport Name] = @sportName
 go
 
 /* Coaches by sport */
@@ -257,7 +257,7 @@ create procedure CoachesSport
 	@sportName as varchar(30)
 as
 	select distinct
-		[CoachId] AS Id
+		[Coach Id] AS Id,
 		[Coach Firstname] AS Firstname,
 		[Coach Lastname] AS Lastname,
 		[Coach Middlename] AS Middlename
@@ -271,12 +271,11 @@ create procedure CompetitonsByOrganizationBetweenDate
 	@to date
 as
 	select
-		AllCompetitions.OrganizationName [Organization Name],
-		COUNT(OrganizationName) AS AmountOfCompetitions
+		[Organization Name],
+		COUNT([Organization Name]) AS AmountOfCompetitions
 	from AllCompetitions
-	where AllCompetitions.CompetitionDate between @from and @to
-	group by
-		AllCompetitions.OrganizationName
+	where AllCompetitions.[Competition Date] between @from and @to
+	group by AllCompetitions.[Organization Name]
 go
 
 /* Competitions on building between date */
@@ -293,7 +292,7 @@ as
 		[Organization Name]
 	from AllCompetitions
 	where
-		AllCompetitions.CompetitionDate between @from and @to
+		[Competition Date] between @from and @to
 go
 
 /* Winners of competition */
