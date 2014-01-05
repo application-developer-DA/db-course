@@ -1,6 +1,8 @@
 #include "maintabwindow.h"
 #include "ui_maintabwindow.h"
 
+#include "personeditform.h"
+
 #include <QtSql>
 #include <QMessageBox>
 
@@ -477,4 +479,18 @@ void MainTabWindow::on_competitionConstructionFilter_toggled(bool checked)
     if (checked)
         applyCompetitionConstructionFilter();
     ui->competitionConstructionFilterCombobox->setEnabled(checked);
+}
+
+void MainTabWindow::on_editCoachBtn_clicked()
+{
+    int coachId = -1;
+    QModelIndex index = ui->coachesView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = coachesModel->record(index.row());
+        coachId = record.value(0).toInt();
+    }
+
+    PersonEditForm form(coachId, true, this);
+    form.exec();
+    updateSportCoachesView();
 }

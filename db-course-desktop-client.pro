@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     authorizationform.cpp \
-    maintabwindow.cpp
+    maintabwindow.cpp \
+    personeditform.cpp
 
 HEADERS  += mainwindow.h \
     authorizationform.h \
-    maintabwindow.h
+    maintabwindow.h \
+    personeditform.h
 
 FORMS    += mainwindow.ui \
     authorizationform.ui \

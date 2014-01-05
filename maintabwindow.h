@@ -25,6 +25,7 @@ public:
 private slots:
     void on_addSportBtn_clicked();
     void on_deleteSportBtn_clicked();
+    void on_editCoachBtn_clicked();
 
     void updateSportCoachesView();
     void updateSportsmanCoachesView();
