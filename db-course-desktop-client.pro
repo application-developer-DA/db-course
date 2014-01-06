@@ -17,7 +17,8 @@ SOURCES += main.cpp\
     ClubEditForm.cpp \
     MainTabWindow.cpp \
     MainWindow.cpp \
-    PersonEditForm.cpp
+    PersonEditForm.cpp \
+    BaseEditForm.cpp
 
 HEADERS  += \
     QDateEditSqlDelegate.h \
@@ -26,7 +27,8 @@ HEADERS  += \
     MainTabWindow.h \
     MainWindow.h \
     PersonEditForm.h \
-    QCustomDateEdit.h
+    QCustomDateEdit.h \
+    BaseEditForm.h
 
 FORMS    += mainwindow.ui \
     authorizationform.ui \
