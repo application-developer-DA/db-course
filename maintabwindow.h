@@ -23,16 +23,13 @@ public:
     void login();
 
 private slots:
-    void on_addSportBtn_clicked();
-    void on_deleteSportBtn_clicked();
-    void on_editCoachBtn_clicked();
-    void on_editSportsmanBtn_clicked();
-    void on_editSportConstructionBtn_clicked();
-    void on_organizationEditBtn_clicked();
-
     void updateSportCoachesView();
     void updateSportsmanCoachesView();
     void updateWinnersView();
+
+    void on_addSportBtn_clicked();
+    void on_deleteSportBtn_clicked();
+    void on_editCoachBtn_clicked();
 
     void on_enableSportsmenFilters_stateChanged(int state);
     void on_sportsmenSportFilter_toggled(bool checked);
@@ -40,17 +37,22 @@ private slots:
     void on_sportsmenCoachFilter_toggled(bool checked);
     void on_sportsmenCompetitionFilter_toggled(bool checked);
     void on_sportsmenMultipleSportsFilter_toggled(bool checked);
+    void on_editSportsmanBtn_clicked();
+    void on_sportsmanCoachEditBtn_clicked();
 
     void on_enableBuildingFilters_stateChanged(int state);
     void on_constructionTypeFilter_toggled(bool checked);
     void on_constructionPlacesFilter_toggled(bool checked);
     void on_constructionCompetitionsFilter_toggled(bool checked);
+    void on_editSportConstructionBtn_clicked();
+    void on_organizationEditBtn_clicked();
 
     void on_enableCompetitionFilters_stateChanged(int state);
     void on_competitionDateFilter_toggled(bool checked);
     void on_competitionOrganizerFilter_toggled(bool checked);
     void on_competitionSportFilter_toggled(bool checked);
     void on_competitionConstructionFilter_toggled(bool checked);
+    void on_editClubsBtn_clicked();
 
     /* Sportsmen filters */
     void applySportsmanSportFilter();
@@ -68,8 +70,6 @@ private slots:
     void applyCompetitionSportFilter();
     void applyCompetitionOrganizerFilter();
     void applyCompetitionDateFilter();
-
-    void on_sportsmanCoachEditBtn_clicked();
 
 private:
     /* Tabs filling functions */
