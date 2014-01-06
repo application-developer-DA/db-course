@@ -13,13 +13,13 @@ class BaseEditForm : public QDialog
     Q_OBJECT
 public:
     enum WidgetType {
-        Label,
         LineEdit,
         ComboBox,
         DateEdit
     };
 
     struct WidgetMapping {
+        QString     title;
         WidgetType  type;
         QVariant    value;
         int         mapToColumn;
@@ -30,7 +30,7 @@ public:
         QSqlRelation relation;
     };
 
-    explicit BaseEditForm(const QString& tableName, const QVector<Relation> relations,
+    explicit BaseEditForm(int id, const QString& tableName, const QVector<Relation> relations,
                           const QVector<WidgetMapping>& mappings, QWidget* parent = nullptr);
 
     void done(int result);

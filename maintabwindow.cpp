@@ -1,5 +1,6 @@
 #include "ui_maintabwindow.h"
 
+#include "BaseEditForm.h"
 #include "MainTabWindow.h"
 #include "PersonEditForm.h"
 
@@ -519,4 +520,29 @@ void MainTabWindow::on_editSportsmanBtn_clicked()
     form.exec();
     updateSportsmanCoachesView();
     // Update Sportsman View
+}
+
+void MainTabWindow::on_editSportConstructionBtn_clicked()
+{
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "Owner Organization:", BaseEditForm::ComboBox, QVariant("name"), 1 },
+        { "Constuction Name:",   BaseEditForm::LineEdit, QVariant(),       2 },
+        { "Address:",            BaseEditForm::LineEdit, QVariant(),       3 },
+        { "Type:",               BaseEditForm::LineEdit, QVariant(),       4 },
+        { "Places Amount:",      BaseEditForm::LineEdit, QVariant(),       5 },
+        { "Area:",               BaseEditForm::LineEdit, QVariant(),       6 }
+    };
+
+    QVector<BaseEditForm::Relation> relations {
+        { 1, QSqlRelation("Organization", "id", "name") }
+    };
+
+    QModelIndex index = ui->buildingsView->currentIndex();
+    int id = -1;
+    if (index.isValid()) {
+        QSqlRecord record = constructionsModel->record(index.row());
+        id = record.value(0).toInt();
+    }
+    BaseEditForm form(id, "Building", relations, mappings);
+    form.exec();
 }

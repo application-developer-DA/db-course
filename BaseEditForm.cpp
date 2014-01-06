@@ -6,7 +6,7 @@
 
 #include <QVector>
 
-BaseEditForm::BaseEditForm(const QString& tableName, const QVector<Relation> relations, const QVector<WidgetMapping> &mappings, QWidget* parent)
+BaseEditForm::BaseEditForm(int id, const QString& tableName, const QVector<Relation> relations, const QVector<WidgetMapping> &mappings, QWidget* parent)
     : QDialog(parent)
 {
     model = new QSqlRelationalTableModel(this);
@@ -19,11 +19,9 @@ BaseEditForm::BaseEditForm(const QString& tableName, const QVector<Relation> rel
 
     mapper = new QDataWidgetMapper(this);
     foreach (WidgetMapping mapping, mappings) {
+        QLabel* label = new QLabel(mapping.title);
         QWidget* widget;
         switch (mapping.type) {
-        case Label:
-            widget = new QLabel(mapping.value.toString());
-            break;
         case LineEdit:
             widget = new QLineEdit;
             break;
@@ -42,7 +40,7 @@ BaseEditForm::BaseEditForm(const QString& tableName, const QVector<Relation> rel
         default:
             Q_ASSERT(0);
         }
-        widgets << widget;
+        widgets << label << widget;
 
         mapper->addMapping(widget, mapping.mapToColumn);
     }
@@ -68,10 +66,21 @@ BaseEditForm::BaseEditForm(const QString& tableName, const QVector<Relation> rel
     connect(closeButton, SIGNAL(clicked()), SLOT(accept()));
 
     widgetsLayout->addWidget(buttonBox, widgets.size() + 1, 0, 1, 3);
-
     setLayout(widgetsLayout);
 
     setWindowTitle(tr("Edit Dialog"));
+
+    if (id != -1) {
+        for (int row = 0; row < model->rowCount(); ++row) {
+            QSqlRecord record = model->record(row);
+            if (record.value(0).toInt() == id) {
+                mapper->setCurrentIndex(row);
+                break;
+            }
+        }
+    } else {
+        mapper->toFirst();
+    }
 }
 
 void BaseEditForm::done(int result)
