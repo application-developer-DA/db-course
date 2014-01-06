@@ -544,6 +544,38 @@ void MainTabWindow::on_editSportConstructionBtn_clicked()
         QSqlRecord record = constructionsModel->record(index.row());
         id = record.value(0).toInt();
     }
+
     BaseEditForm form(id, "Building", relations, mappings);
+    form.exec();
+}
+
+void MainTabWindow::on_organizationEditBtn_clicked()
+{
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "Name:",    BaseEditForm::LineEdit, QVariant(), 1 },
+        { "Address:", BaseEditForm::LineEdit, QVariant(), 2 }
+    };
+
+    QModelIndex index = ui->organizationsView->currentIndex();
+    int id = -1;
+    if (index.isValid()) {
+        QSqlRecord record = organizationsModel->record(index.row());
+        id = record.value(0).toInt();
+    }
+
+    BaseEditForm form(id, "Organization", QVector<BaseEditForm::Relation>(), mappings);
+    form.exec();
+}
+
+void MainTabWindow::on_sportsmanCoachEditBtn_clicked()
+{
+    int id = -1;
+    QModelIndex index = ui->sportsmanCoachesView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = sportsmanCoachesModel->record(index.row());
+        id = record.value(0).toInt();
+    }
+
+    PersonEditForm form(id, true, this);
     form.exec();
 }

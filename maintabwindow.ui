@@ -14,13 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="loginLabel">
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabSportsmen">
      <property name="tabShape">
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSports">
       <attribute name="title">
@@ -113,7 +120,7 @@
        <string>Sportsmen</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0" rowspan="2">
+       <item row="0" column="0" rowspan="3">
         <widget class="QGroupBox" name="sportsmenFilters">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -309,13 +316,6 @@ in competitions</string>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPushButton" name="editSportsmanBtn">
-             <property name="text">
-              <string>Edit Selected Sportsman</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -327,6 +327,13 @@ in competitions</string>
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="editSportsmanBtn">
+             <property name="text">
+              <string>Edit Selected Sportsman</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -346,13 +353,37 @@ in competitions</string>
          </item>
         </layout>
        </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sportsmanCoachEditBtn">
+           <property name="text">
+            <string>Edit Coach</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabBuildlingOrganizations">
       <attribute name="title">
        <string>Sport Constructions &amp;&amp; Organizations</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout">
+      <layout class="QGridLayout" name="gridLayout_8">
        <item row="0" column="0">
         <widget class="QGroupBox" name="bulidingFiltersGroup">
          <property name="sizePolicy">
@@ -539,6 +570,30 @@ in competitions</string>
          </item>
         </layout>
        </item>
+       <item row="2" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="organizationEditBtn">
+           <property name="text">
+            <string>Edit Organization</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabCompetititons">
@@ -546,6 +601,48 @@ in competitions</string>
        <string>Competitions Info</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
+       <item row="2" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_16">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Clubs</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableView" name="clubsView"/>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_15">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Competition Winners</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableView" name="winnersView"/>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Competitions</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableView" name="competitionsView"/>
+         </item>
+        </layout>
+       </item>
        <item row="0" column="0" rowspan="2">
         <widget class="QGroupBox" name="competitionFiltersGroup">
          <property name="sizePolicy">
@@ -710,57 +807,8 @@ in competitions</string>
          </layout>
         </widget>
        </item>
-       <item row="0" column="1">
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Competitions</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTableView" name="competitionsView"/>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="1">
-        <layout class="QVBoxLayout" name="verticalLayout_15">
-         <item>
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Competition Winners</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTableView" name="winnersView"/>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="1">
-        <layout class="QVBoxLayout" name="verticalLayout_16">
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Clubs</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QTableView" name="clubsView"/>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="loginLabel">
-     <property name="text">
-      <string>TextLabel</string>
-     </property>
     </widget>
    </item>
   </layout>

@@ -28,6 +28,7 @@ private slots:
     void on_editCoachBtn_clicked();
     void on_editSportsmanBtn_clicked();
     void on_editSportConstructionBtn_clicked();
+    void on_organizationEditBtn_clicked();
 
     void updateSportCoachesView();
     void updateSportsmanCoachesView();
@@ -67,6 +68,8 @@ private slots:
     void applyCompetitionSportFilter();
     void applyCompetitionOrganizerFilter();
     void applyCompetitionDateFilter();
+
+    void on_sportsmanCoachEditBtn_clicked();
 
 private:
     /* Tabs filling functions */

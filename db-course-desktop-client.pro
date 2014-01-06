@@ -14,7 +14,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     AuthorizationForm.cpp \
-    ClubEditForm.cpp \
     MainTabWindow.cpp \
     MainWindow.cpp \
     PersonEditForm.cpp \
@@ -23,7 +22,6 @@ SOURCES += main.cpp\
 HEADERS  += \
     QDateEditSqlDelegate.h \
     AuthorizationForm.h \
-    ClubEditForm.h \
     MainTabWindow.h \
     MainWindow.h \
     PersonEditForm.h \

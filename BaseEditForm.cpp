@@ -68,10 +68,8 @@ BaseEditForm::BaseEditForm(int id, const QString& tableName, const QVector<Relat
     connect(closeButton, SIGNAL(clicked()), SLOT(accept()));
 
     widgetsLayout->addWidget(buttonBox, widgets.size() + 1, 0, 1, 3);
-    setLayout(widgetsLayout);
 
-    setWindowTitle(tr("Edit Dialog"));
-
+    /* Set mapper to display entry with chosen id */
     if (id != -1) {
         for (int row = 0; row < model->rowCount(); ++row) {
             QSqlRecord record = model->record(row);
@@ -83,6 +81,33 @@ BaseEditForm::BaseEditForm(int id, const QString& tableName, const QVector<Relat
     } else {
         mapper->toFirst();
     }
+
+    /* Create navigation buttons */
+    QPushButton* firstButton = new QPushButton(tr("<< &First"));
+    QPushButton* previousButton = new QPushButton(tr("< &Previous"));
+    QPushButton* nextButton = new QPushButton(tr("&Next >"));
+    QPushButton* lastButton = new QPushButton(tr("&Last >>"));
+
+    connect(firstButton, SIGNAL(clicked()), mapper, SLOT(toFirst()));
+    connect(previousButton, SIGNAL(clicked()), mapper, SLOT(toPrevious()));
+    connect(nextButton, SIGNAL(clicked()), mapper, SLOT(toNext()));
+    connect(lastButton, SIGNAL(clicked()), mapper, SLOT(toLast()));
+
+    QHBoxLayout* topButtonLayout = new QHBoxLayout;
+    topButtonLayout->setContentsMargins(20, 0, 20, 5);
+    topButtonLayout->addStretch();
+    topButtonLayout->addWidget(firstButton);
+    topButtonLayout->addWidget(previousButton);
+    topButtonLayout->addWidget(nextButton);
+    topButtonLayout->addWidget(lastButton);
+    topButtonLayout->addStretch();
+
+    QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(topButtonLayout);
+    mainLayout->addLayout(widgetsLayout);
+
+    setLayout(mainLayout);
+    setWindowTitle(tr("Edit Dialog"));
 }
 
 void BaseEditForm::done(int result)
