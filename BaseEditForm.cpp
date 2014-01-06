@@ -18,6 +18,7 @@ BaseEditForm::BaseEditForm(int id, const QString& tableName, const QVector<Relat
     model->select();
 
     mapper = new QDataWidgetMapper(this);
+    mapper->setModel(model);
     foreach (WidgetMapping mapping, mappings) {
         QLabel* label = new QLabel(mapping.title);
         QWidget* widget;
