@@ -13,7 +13,7 @@ enum {
 };
 
 static const QString kAllSportsmenQuery           = "SELECT id AS Id, firstname AS Firstname, lastname AS Lastname, middlename AS Middlename, birthdate AS Birthdate FROM Person";
-static const QString kAllSportConstructionsQuery  = "SELECT [Building Name], [Competition Name], [Sport Name], [Organization Name] FROM AllCompetitions";
+static const QString kAllSportConstructionsQuery  = "SELECT [Building Id], [Building Name], [Competition Name], [Sport Name], [Organization Name] FROM AllCompetitions";
 static const QString kAllCompetitionsQuery        = "SELECT [Competition Id], [Competition Name], [Competition Date], [Sport Name], [Building Name], [Organization Name] FROM AllCompetitions";
 
 static inline void setDefaultViewParameters(QTableView* view)
@@ -22,6 +22,7 @@ static inline void setDefaultViewParameters(QTableView* view)
     view->setSelectionMode(QAbstractItemView::SingleSelection);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->horizontalHeader()->setStretchLastSection(true);
+    view->resizeColumnsToContents();
 }
 
 MainTabWindow::MainTabWindow(QWidget* parent)
