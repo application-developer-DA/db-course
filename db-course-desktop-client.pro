@@ -13,15 +13,20 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    authorizationform.cpp \
-    maintabwindow.cpp \
-    personeditform.cpp
+    AuthorizationForm.cpp \
+    ClubEditForm.cpp \
+    MainTabWindow.cpp \
+    MainWindow.cpp \
+    PersonEditForm.cpp
 
-HEADERS  += mainwindow.h \
-    authorizationform.h \
-    maintabwindow.h \
-    personeditform.h
+HEADERS  += \
+    QDateEditSqlDelegate.h \
+    AuthorizationForm.h \
+    ClubEditForm.h \
+    MainTabWindow.h \
+    MainWindow.h \
+    PersonEditForm.h \
+    QCustomDateEdit.h
 
 FORMS    += mainwindow.ui \
     authorizationform.ui \

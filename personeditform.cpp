@@ -1,19 +1,5 @@
-#include "personeditform.h"
-
-enum {
-    Person_Id,
-    Person_Firstname,
-    Person_Lastname,
-    Person_Middlename,
-    Person_Birthdate
-};
-
-enum {
-    Experience_Id,
-    Experience_PersonId,
-    Experience_SportId,
-    Experience_Title
-};
+#include "PersonEditForm.h"
+#include "QDateEditSqlDelegate.h"
 
 PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     : QDialog(parent)
@@ -48,6 +34,7 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     mapper = new QDataWidgetMapper(this);
     mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
     mapper->setModel(personModel);
+    mapper->setItemDelegate(new QDateEditSqlDelegate(Person_Birthdate, this));
     mapper->addMapping(firstnameEdit, Person_Firstname);
     mapper->addMapping(lastnameEdit, Person_Lastname);
     mapper->addMapping(middlenameEdit, Person_Middlename);
@@ -80,14 +67,13 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     personLayout->addWidget(birthEdit, 4, 1);
     personLayout->addWidget(buttonBox, 6, 0, 1, 3);
 
+    /* Experience table editing etc. */
     experienceModel = new QSqlRelationalTableModel(this);
     experienceModel->setTable("Experience");
     experienceModel->setRelation(Experience_SportId, QSqlRelation("Sport", "id", "name"));
     experienceModel->setHeaderData(Experience_SportId, Qt::Horizontal, "Sport");
     experienceModel->setHeaderData(Experience_Title, Qt::Horizontal, "Title");
     updateExperienceModel();
-
-    // connect(experienceModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(updateExperienceModel()));
 
     experienceView = new QTableView;
     experienceView->setModel(experienceModel);

@@ -1,5 +1,6 @@
-#include "authorizationform.h"
 #include "ui_authorizationform.h"
+
+#include "AuthorizationForm.h"
 
 AuthorizationForm::AuthorizationForm(QWidget* parent)
     : QWidget(parent)

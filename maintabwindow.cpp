@@ -1,6 +1,7 @@
-#include "maintabwindow.h"
 #include "ui_maintabwindow.h"
-#include "personeditform.h"
+
+#include "MainTabWindow.h"
+#include "PersonEditForm.h"
 
 #include <QtSql>
 #include <QMessageBox>

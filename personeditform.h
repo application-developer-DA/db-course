@@ -5,6 +5,21 @@
 #include <QtWidgets>
 #include <QtSql>
 
+enum {
+    Person_Id,
+    Person_Firstname,
+    Person_Lastname,
+    Person_Middlename,
+    Person_Birthdate
+};
+
+enum {
+    Experience_Id,
+    Experience_PersonId,
+    Experience_SportId,
+    Experience_Title
+};
+
 class PersonEditForm : public QDialog
 {
     Q_OBJECT
