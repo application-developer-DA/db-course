@@ -32,8 +32,8 @@ BaseEditForm::BaseEditForm(int id, const QString& tableName, const QVector<Relat
             widget = new QComboBox;
             ((QComboBox*)widget)->setModel(relationModel);
             ((QComboBox*)widget)->setModelColumn(relationModel->fieldIndex(mapping.value.toString()));
-            break;
         }
+            break;
         case DateEdit:
             widget = new QDateEdit;
             ((QDateEdit*)widget)->setCalendarPopup(true);

@@ -13,7 +13,7 @@ class BaseEditForm : public QDialog
     Q_OBJECT
 public:
     enum WidgetType {
-        LineEdit,
+        LineEdit = 0,
         ComboBox,
         DateEdit
     };
