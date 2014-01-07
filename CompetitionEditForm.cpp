@@ -8,7 +8,6 @@ static const QString kCompetitionParticipantsQuery =
 
 CompetitionEditForm::CompetitionEditForm(int id, const QString &tableName, const QVector<Relation> relations, const QVector<WidgetMapping> &mappings, QWidget *parent)
     : BaseEditForm(id, tableName, relations, mappings, parent)
-    , competitionId(id)
 {
     if (id == -1)
         id = model->record(mapper->currentIndex()).value(0).toInt();
@@ -33,6 +32,8 @@ CompetitionEditForm::CompetitionEditForm(int id, const QString &tableName, const
 
     mainLayout->addSpacing(20);
     mainLayout->addLayout(layout);
+
+    connect(mapper, SIGNAL(currentIndexChanged(int)), SLOT(updateParticipants()));
 }
 
 void CompetitionEditForm::onParticipantEdit()
@@ -60,5 +61,11 @@ void CompetitionEditForm::onParticipantEdit()
     BaseEditForm form(id, "Participant", relations, mappings, this);
     form.exec();
 
-    participantsModel->setQuery(QString(kCompetitionParticipantsQuery).arg(competitionId));
+    updateParticipants();
+}
+
+void CompetitionEditForm::updateParticipants()
+{
+    int id = model->record(mapper->currentIndex()).value(0).toInt();
+    participantsModel->setQuery(QString(kCompetitionParticipantsQuery).arg(id));
 }

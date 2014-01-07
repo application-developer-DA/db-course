@@ -14,10 +14,9 @@ public:
 
 private slots:
     void onParticipantEdit();
+    void updateParticipants();
 
 private:
     QSqlQueryModel* participantsModel;
     QTableView*     participantsView;
-
-    int competitionId;
 };

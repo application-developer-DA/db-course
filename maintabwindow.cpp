@@ -504,8 +504,16 @@ void MainTabWindow::on_editCoachBtn_clicked()
         coachId = record.value(0).toInt();
     }
 
-    PersonEditForm form(coachId, true, this);
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "Firstname",  BaseEditForm::LineEdit, QVariant(), 1 },
+        { "Lastname",   BaseEditForm::LineEdit, QVariant(), 2 },
+        { "Middlename", BaseEditForm::LineEdit, QVariant(), 3 },
+        { "Birthdate",  BaseEditForm::DateEdit, QVariant(), 4 }
+    };
+
+    PersonEditForm form(coachId, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
+
     updateSportCoachesView();
 }
 
@@ -518,10 +526,17 @@ void MainTabWindow::on_editSportsmanBtn_clicked()
         sportsmanId = record.value(0).toInt();
     }
 
-    PersonEditForm form(sportsmanId, false, this);
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "Firstname",  BaseEditForm::LineEdit, QVariant(), 1 },
+        { "Lastname",   BaseEditForm::LineEdit, QVariant(), 2 },
+        { "Middlename", BaseEditForm::LineEdit, QVariant(), 3 },
+        { "Birthdate",  BaseEditForm::DateEdit, QVariant(), 4 }
+    };
+
+    PersonEditForm form(sportsmanId, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
+
     updateSportsmanCoachesView();
-    // Update Sportsman View
 }
 
 void MainTabWindow::on_editSportConstructionBtn_clicked()
@@ -577,7 +592,14 @@ void MainTabWindow::on_sportsmanCoachEditBtn_clicked()
         id = record.value(0).toInt();
     }
 
-    PersonEditForm form(id, true, this);
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "Firstname",  BaseEditForm::LineEdit, QVariant(), 1 },
+        { "Lastname",   BaseEditForm::LineEdit, QVariant(), 2 },
+        { "Middlename", BaseEditForm::LineEdit, QVariant(), 3 },
+        { "Birthdate",  BaseEditForm::DateEdit, QVariant(), 4 }
+    };
+
+    PersonEditForm form(id, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
 }
 

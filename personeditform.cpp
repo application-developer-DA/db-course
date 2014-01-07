@@ -1,72 +1,18 @@
 #include "PersonEditForm.h"
-#include "QDateEditSqlDelegate.h"
 
-PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
-    : QDialog(parent)
-    , displayCoachWidgets(isCoach)
+#include <QtWidgets>
+#include <QtSql>
+
+enum {
+    Experience_Id,
+    Experience_PersonId,
+    Experience_SportId,
+    Experience_Title
+};
+
+PersonEditForm::PersonEditForm(int id, const QString &tableName, const QVector<Relation> relations, const QVector<WidgetMapping> &mappings, QWidget *parent)
+    : BaseEditForm(id, tableName, relations, mappings, parent)
 {
-    firstnameEdit = new QLineEdit;
-    QLabel* firstnameLabel = new QLabel(tr("Name:"));
-
-    lastnameEdit = new QLineEdit;
-    QLabel* lastnameLabel = new QLabel(tr("Last Name:"));
-
-    middlenameEdit = new QLineEdit;
-    QLabel* middlenameLabel = new QLabel(tr("Middle Name:"));
-
-    birthEdit = new QDateEdit;
-    birthEdit->setCalendarPopup(true);
-    QLabel* birthLabel = new QLabel(tr("Birth Date:"));
-
-    QPushButton* addButton = new QPushButton(tr("&Add"));
-    QPushButton* deleteButton = new QPushButton(tr("&Delete"));
-    QPushButton* closeButton = new QPushButton(tr("&Close"));
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(addButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(deleteButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(closeButton, QDialogButtonBox::AcceptRole);
-
-    personModel = new QSqlTableModel(this);
-    personModel->setTable("Person");
-    personModel->select();
-
-    mapper = new QDataWidgetMapper(this);
-    mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
-    mapper->setModel(personModel);
-    mapper->setItemDelegate(new QDateEditSqlDelegate(Person_Birthdate, this));
-    mapper->addMapping(firstnameEdit, Person_Firstname);
-    mapper->addMapping(lastnameEdit, Person_Lastname);
-    mapper->addMapping(middlenameEdit, Person_Middlename);
-    mapper->addMapping(birthEdit, Person_Birthdate);
-
-    if (id != -1) {
-        for (int row = 0; row < personModel->rowCount(); ++row) {
-            QSqlRecord record = personModel->record(row);
-            if (record.value(Person_Id).toInt() == id) {
-                mapper->setCurrentIndex(row);
-                break;
-            }
-        }
-    } else {
-        mapper->toFirst();
-    }
-
-    connect(addButton, SIGNAL(clicked()), SLOT(addPerson()));
-    connect(deleteButton, SIGNAL(clicked()), SLOT(deletePerson()));
-    connect(closeButton, SIGNAL(clicked()), SLOT(accept()));
-
-    QGridLayout* personLayout = new QGridLayout;
-    personLayout->addWidget(firstnameLabel, 1, 0);
-    personLayout->addWidget(firstnameEdit, 1, 1);
-    personLayout->addWidget(lastnameLabel, 2, 0);
-    personLayout->addWidget(lastnameEdit, 2, 1);
-    personLayout->addWidget(middlenameLabel, 3, 0);
-    personLayout->addWidget(middlenameEdit, 3, 1);
-    personLayout->addWidget(birthLabel, 4, 0);
-    personLayout->addWidget(birthEdit, 4, 1);
-    personLayout->addWidget(buttonBox, 6, 0, 1, 3);
-
     /* Experience table editing etc. */
     experienceModel = new QSqlRelationalTableModel(this);
     experienceModel->setTable("Experience");
@@ -95,57 +41,16 @@ PersonEditForm::PersonEditForm(int id, bool isCoach, QWidget* parent)
     experienceLayout->addWidget(deleteExperienceButton, 2, 1);
     experienceLayout->addWidget(addExperienceButton, 2, 2);
 
-    QSpacerItem* spacer = new QSpacerItem(10, 20);
-
-    QVBoxLayout* mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(personLayout);
-    mainLayout->addItem(spacer);
+    mainLayout->addSpacing(20);
     mainLayout->addLayout(experienceLayout);
 
-    setLayout(mainLayout);
-
-    setWindowTitle(tr("Edit Person Information"));
+    connect(mapper, SIGNAL(currentIndexChanged(int)), SLOT(updateExperienceModel()));
 }
 
 void PersonEditForm::updateExperienceModel()
 {
-    experienceModel->setFilter(QString("person_id = %1").arg(personModel->record(mapper->currentIndex()).value(Person_Id).toInt()));
+    experienceModel->setFilter(QString("person_id = %1").arg(model->record(mapper->currentIndex()).value(0).toInt()));
     experienceModel->select();
-}
-
-void PersonEditForm::done(int result)
-{
-    mapper->submit();
-    QDialog::done(result);
-}
-
-void PersonEditForm::addPerson()
-{
-    int row = mapper->currentIndex();
-    mapper->submit();
-    personModel->insertRow(row);
-    mapper->setCurrentIndex(row);
-
-    firstnameEdit->clear();
-    lastnameEdit->clear();
-    middlenameEdit->clear();
-    birthEdit->setDate(QDate::currentDate());
-    firstnameEdit->setFocus();
-
-    updateExperienceModel();
-}
-
-void PersonEditForm::deletePerson()
-{
-    int row = mapper->currentIndex();
-    personModel->removeRow(row);
-    mapper->submit();
-    mapper->setCurrentIndex(qMin(row, personModel->rowCount() - 1));
-
-    updateExperienceModel();
-
-    if (displayCoachWidgets)
-        accept();
 }
 
 void PersonEditForm::addExperience()
@@ -154,7 +59,7 @@ void PersonEditForm::addExperience()
     experienceModel->insertRow(row);
 
     QModelIndex index = experienceModel->index(row, Experience_PersonId);
-    experienceModel->setData(index, personModel->record(mapper->currentIndex()).value(Person_Id).toInt());
+    experienceModel->setData(index, model->record(mapper->currentIndex()).value(0).toInt());
 
     index = experienceModel->index(row, Experience_SportId);
     experienceView->setCurrentIndex(index);

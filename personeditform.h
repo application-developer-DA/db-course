@@ -1,54 +1,25 @@
 #pragma once
 
-#include <QDialog>
+#include "BaseEditForm.h"
 
-#include <QtWidgets>
-#include <QtSql>
+class QTableView;
 
-enum {
-    Person_Id,
-    Person_Firstname,
-    Person_Lastname,
-    Person_Middlename,
-    Person_Birthdate
-};
-
-enum {
-    Experience_Id,
-    Experience_PersonId,
-    Experience_SportId,
-    Experience_Title
-};
-
-class PersonEditForm : public QDialog
+class PersonEditForm : public BaseEditForm
 {
     Q_OBJECT
 
 public:
-    explicit PersonEditForm(int id = -1, bool isCoach = false, QWidget* parent = nullptr);
-
-    void done(int result);
+    explicit PersonEditForm(int id, const QString &tableName, const QVector<Relation> relations,
+                            const QVector<WidgetMapping> &mappings, QWidget *parent = nullptr);
 
 private slots:
-    void updateExperienceModel();
-
-    void addPerson();
-    void deletePerson();
-
     void addExperience();
     void deleteExperience();
 
-private:
-    bool displayCoachWidgets;
+    void updateExperienceModel();
 
-    QDataWidgetMapper* mapper;
-    QSqlTableModel* personModel;
+private:
     QSqlRelationalTableModel* experienceModel;
     QTableView* experienceView;
-
-    QLineEdit* firstnameEdit;
-    QLineEdit* lastnameEdit;
-    QLineEdit* middlenameEdit;
-    QDateEdit* birthEdit;
 };
 
