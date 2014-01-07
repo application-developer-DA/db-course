@@ -66,7 +66,7 @@
          <item>
           <widget class="QPushButton" name="addSportBtn">
            <property name="text">
-            <string>Add Sport</string>
+            <string>Edit Selected Sport</string>
            </property>
           </widget>
          </item>

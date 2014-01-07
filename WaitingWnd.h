@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QMovie>
-#include <QVBoxLayout>
+#include <QGridLayout>
 
 class WaitingWnd : public QWidget
 {
@@ -17,7 +17,7 @@ public:
 
         QLabel* textLabel = new QLabel("Loading, please wait...", this);
 
-        QVBoxLayout* layout = new QVBoxLayout;
+        QGridLayout* layout = new QGridLayout;
         layout->addWidget(animationLabel);
         layout->addWidget(textLabel);
 

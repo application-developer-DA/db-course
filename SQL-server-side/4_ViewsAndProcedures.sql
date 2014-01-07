@@ -44,6 +44,7 @@ go
 create view SportsmenWithCoaches
 as
 select
+	Learner.id [Id],
 	L.id [Learner Id],
 	L.firstname [Learner Firstname], 
 	L.lastname [Learner Lastname],
@@ -57,8 +58,7 @@ from
 	Learner
 inner join Person as L on L.id = Learner.apprentice_id
 inner join Person as C on C.id = Learner.coach_id
-inner join Experience on Experience.person_id = L.id
-inner join Sport on Sport.id = Experience.sport_id
+inner join Sport on Sport.id = Learner.sport_id
 go
 
 create view AllParticipants

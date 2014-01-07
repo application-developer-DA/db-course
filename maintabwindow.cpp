@@ -9,7 +9,7 @@
 #include <QMessageBox>
 
 enum {
-    Sport_Id,
+    Sport_Id = 0,
     Sport_Name
 };
 
@@ -64,12 +64,21 @@ void MainTabWindow::login()
 
 void MainTabWindow::on_addSportBtn_clicked()
 {
-    int row = sportsModel->rowCount();
-    sportsModel->insertRow(row);
-    QModelIndex index = sportsModel->index(row, Sport_Name);
-    ui->sportsView->setCurrentIndex(index);
-    ui->sportsView->edit(index);
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "Sport Name:", BaseEditForm::LineEdit, QVariant(), 1 }
+    };
 
+    int id = -1;
+    QModelIndex index = ui->sportsView->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = sportsModel->record(index.row());
+        id = record.value(0).toInt();
+    }
+
+    BaseEditForm form(id, "Sport", QVector<BaseEditForm::Relation>(), mappings, this);
+    form.exec();
+
+    sportsModel->select();
     // connect(ui->sportsView, &QTableView::entered, [=]() { sportsModel->select(); });
 }
 

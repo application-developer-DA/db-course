@@ -30,7 +30,8 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
 {
     qDebug() << authData.hostname << authData.username << authData.password;
 
-    showWaitingWnd(true);
+    // showWaitingWnd(true);
+    // qApp->processEvents();
 
     QString hostname = QString("Driver={SQL Server};Server=%1;Database=%2;")
             .arg(authData.hostname)
@@ -43,7 +44,7 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
     if (!m_db.open()) {
         QMessageBox::critical(0, QObject::tr("Database Error"), m_db.lastError().text());
         m_db.close();
-        showWaitingWnd(false);
+        // showWaitingWnd(false);
         return;
     }
 

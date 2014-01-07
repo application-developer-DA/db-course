@@ -16,10 +16,16 @@ private slots:
     void addExperience();
     void deleteExperience();
 
+    void editLearner();
+
     void updateExperienceModel();
+    void updateLearnerModel();
 
 private:
     QSqlRelationalTableModel* experienceModel;
     QTableView* experienceView;
+
+    QSqlQueryModel* learnerModel;
+    QTableView* learnerView;
 };
 
