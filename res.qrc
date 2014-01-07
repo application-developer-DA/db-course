@@ -1,6 +1,7 @@
 <RCC>
-    <qresource prefix="/Images">
-        <file alias="logout-png">C:/Users/Daniel/Downloads/Logout-01.png</file>
-        <file alias="exit-png">C:/Users/Daniel/Downloads/exit.png</file>
+    <qresource prefix="/res">
+        <file>res/exit.png</file>
+        <file>res/Logout-01.png</file>
+        <file>res/loading_animation.gif</file>
     </qresource>
 </RCC>

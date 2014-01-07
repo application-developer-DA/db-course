@@ -9,11 +9,13 @@ MainWindow::MainWindow(QWidget* parent)
     , ui(new Ui::MainWindow)
     , m_authorizationWindow(new AuthorizationForm())
     , m_tabWindow(new MainTabWindow())
+    , m_waitingWnd(new WaitingWnd())
     , m_db(QSqlDatabase::addDatabase("QODBC"))
 {
     ui->setupUi(this);
     ui->stackedWidget->addWidget(m_authorizationWindow);
     ui->stackedWidget->addWidget(m_tabWindow);
+    ui->stackedWidget->addWidget(m_waitingWnd);
     ui->stackedWidget->setCurrentWidget(m_authorizationWindow);
 
     connect(m_authorizationWindow, SIGNAL(authorization(AuthorizationForm::AuthData)), SLOT(onLogin(AuthorizationForm::AuthData)));
@@ -28,6 +30,8 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
 {
     qDebug() << authData.hostname << authData.username << authData.password;
 
+    showWaitingWnd(true);
+
     QString hostname = QString("Driver={SQL Server};Server=%1;Database=%2;")
             .arg(authData.hostname)
             .arg("SportInfrastructure");
@@ -39,11 +43,12 @@ void MainWindow::onLogin(const AuthorizationForm::AuthData& authData)
     if (!m_db.open()) {
         QMessageBox::critical(0, QObject::tr("Database Error"), m_db.lastError().text());
         m_db.close();
+        showWaitingWnd(false);
         return;
     }
 
-    ui->stackedWidget->setCurrentWidget(m_tabWindow);
     m_tabWindow->login();
+    ui->stackedWidget->setCurrentWidget(m_tabWindow);
 }
 
 void MainWindow::on_action_Exit_triggered()
@@ -57,4 +62,12 @@ void MainWindow::on_actionLogout_triggered()
         m_db.close();
     m_authorizationWindow->resetAuthData();
     ui->stackedWidget->setCurrentWidget(m_authorizationWindow);
+}
+
+void MainWindow::showWaitingWnd(bool show)
+{
+    if (show)
+        ui->stackedWidget->setCurrentWidget(m_waitingWnd);
+    else
+        ui->stackedWidget->setCurrentWidget(m_authorizationWindow);
 }

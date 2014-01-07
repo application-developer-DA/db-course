@@ -65,7 +65,7 @@
   <action name="action_Exit">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/Images/exit-png</normaloff>:/Images/exit-png</iconset>
+     <normaloff>:/res/res/exit.png</normaloff>:/res/res/exit.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Exit</string>
@@ -74,7 +74,7 @@
   <action name="actionLogout">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/Images/logout-png</normaloff>:/Images/logout-png</iconset>
+     <normaloff>:/res/res/Logout-01.png</normaloff>:/res/res/Logout-01.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Logout</string>

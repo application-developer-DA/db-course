@@ -28,7 +28,8 @@ HEADERS  += \
     PersonEditForm.h \
     QCustomDateEdit.h \
     BaseEditForm.h \
-    CompetitionEditForm.h
+    CompetitionEditForm.h \
+    WaitingWnd.h
 
 FORMS    += mainwindow.ui \
     authorizationform.ui \
