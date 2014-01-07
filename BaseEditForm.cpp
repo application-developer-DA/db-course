@@ -102,7 +102,7 @@ BaseEditForm::BaseEditForm(int id, const QString& tableName, const QVector<Relat
     topButtonLayout->addWidget(lastButton);
     topButtonLayout->addStretch();
 
-    QVBoxLayout* mainLayout = new QVBoxLayout;
+    mainLayout = new QVBoxLayout;
     mainLayout->addLayout(topButtonLayout);
     mainLayout->addLayout(widgetsLayout);
 
@@ -122,6 +122,24 @@ void BaseEditForm::onAddButton()
     mapper->submit();
     model->insertRow(row);
     mapper->setCurrentIndex(row);
+
+    foreach (QWidget* widget, widgets) {
+        QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
+        if (lineEdit) {
+            lineEdit->setText("");
+            continue;
+        }
+        QDateEdit* dateEdit = qobject_cast<QDateEdit*>(widget);
+        if (dateEdit) {
+            dateEdit->setDate(QDate::currentDate());
+            continue;
+        }
+        QComboBox* comboBox = qobject_cast<QComboBox*>(widget);
+        if (comboBox) {
+            comboBox->setCurrentIndex(0);
+            continue;
+        }
+    }
 }
 
 void BaseEditForm::onDeleteButton()
@@ -130,4 +148,6 @@ void BaseEditForm::onDeleteButton()
     model->removeRow(row);
     mapper->submit();
     mapper->setCurrentIndex(qMin(row, model->rowCount() - 1));
+
+    QMessageBox::information(this, "Deletion", "Deletion has been completed.");
 }

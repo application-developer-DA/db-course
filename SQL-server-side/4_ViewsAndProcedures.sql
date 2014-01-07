@@ -77,11 +77,21 @@ select
 	Competition.name [Competition Name]
 from 
 	Person
-inner join Experience on Experience.person_id = Person.id
-inner join Participant on Participant.experience_id = Experience.id
+inner join Participant on Participant.person_id = Person.id
 inner join Competition on Participant.competition_id = Competition.id
 inner join Club on Club.id = Participant.club_id
 go
+
+/* Auxiliary view */
+create view PersonFullNames
+as
+select 
+	Person.id [Id],
+	Person.firstname + ' ' + Person.lastname + ' ' + Person.middlename AS Name
+from 
+	Person
+go
+	
 
 /* List of all buildling by type etc */
 create procedure BuildingByType
@@ -168,7 +178,7 @@ as
 		SportsmenWithSports.[Firstname],
 		SportsmenWithSports.[Lastname],
 		SportsmenWithSports.[Middlename],
-		COUNT(SportsmenWithSports.Sport)
+		COUNT(SportsmenWithSports.Sport) [Sports Count]
 	from SportsmenWithSports
 	group by SportsmenWithSports.[Person Id], SportsmenWithSports.[Firstname], SportsmenWithSports.[Lastname], SportsmenWithSports.[Middlename]
 	having count(SportsmenWithSports.Sport) > 1

@@ -1,6 +1,7 @@
 #include "ui_maintabwindow.h"
 
 #include "BaseEditForm.h"
+#include "CompetitionEditForm.h"
 #include "MainTabWindow.h"
 #include "PersonEditForm.h"
 
@@ -623,6 +624,6 @@ void MainTabWindow::on_editCompetitionsBtn_clicked()
         { 2, QSqlRelation("Sport", "id", "name") }
     };
 
-    BaseEditForm form(id, "Competition", relations, mappings);
+    CompetitionEditForm form(id, "Competition", relations, mappings);
     form.exec();
 }

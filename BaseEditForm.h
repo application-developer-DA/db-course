@@ -7,10 +7,12 @@
 class QSqlRelationalTableModel;
 class QDataWidgetMapper;
 class QWidget;
+class QVBoxLayout;
 
 class BaseEditForm : public QDialog
 {
     Q_OBJECT
+
 public:
     enum WidgetType {
         LineEdit = 0,
@@ -39,9 +41,11 @@ private slots:
     void onAddButton();
     void onDeleteButton();
 
-private:
+protected:
     QSqlRelationalTableModel* model;
     QDataWidgetMapper* mapper;
     QVector<QWidget*> widgets;
+
+    QVBoxLayout* mainLayout ;
 };
 
