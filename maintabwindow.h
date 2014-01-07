@@ -53,6 +53,7 @@ private slots:
     void on_competitionSportFilter_toggled(bool checked);
     void on_competitionConstructionFilter_toggled(bool checked);
     void on_editClubsBtn_clicked();
+    void on_editCompetitionsBtn_clicked();
 
     /* Sportsmen filters */
     void applySportsmanSportFilter();

@@ -601,3 +601,28 @@ void MainTabWindow::on_editClubsBtn_clicked()
     BaseEditForm form(id, "Club", relations, mappings);
     form.exec();
 }
+
+void MainTabWindow::on_editCompetitionsBtn_clicked()
+{
+    QModelIndex index = ui->competitionsView->currentIndex();
+    int id = -1;
+    if (index.isValid()) {
+        QSqlRecord record = competitionsModel->record(index.row());
+        id = record.value(0).toInt();
+    }
+
+    QVector<BaseEditForm::WidgetMapping> mappings {
+        { "SportConstruction:", BaseEditForm::ComboBox, QVariant("name"), 1 },
+        { "Sport:",             BaseEditForm::ComboBox, QVariant("name"), 2 },
+        { "Competition Name:",  BaseEditForm::LineEdit, QVariant(),       3 },
+        { "Competition Date:",  BaseEditForm::DateEdit, QVariant(),       4 }
+    };
+
+    QVector<BaseEditForm::Relation> relations {
+        { 1, QSqlRelation("Building", "id", "name") },
+        { 2, QSqlRelation("Sport", "id", "name") }
+    };
+
+    BaseEditForm form(id, "Competition", relations, mappings);
+    form.exec();
+}
