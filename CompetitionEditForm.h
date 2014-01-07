@@ -18,4 +18,6 @@ private slots:
 private:
     QSqlQueryModel* participantsModel;
     QTableView*     participantsView;
+
+    int competitionId;
 };

@@ -118,11 +118,34 @@ void BaseEditForm::done(int result)
 
 void BaseEditForm::onAddButton()
 {
-    int row = mapper->currentIndex();
-    mapper->submit();
+    int row = 0;
+    if (model->rowCount() > 0) {
+        row = mapper->currentIndex();
+        mapper->submit();
+    }
     model->insertRow(row);
     mapper->setCurrentIndex(row);
 
+    clearWidgets();
+}
+
+void BaseEditForm::onDeleteButton()
+{
+    int row = mapper->currentIndex();
+    model->removeRow(row);
+    mapper->submit();
+    mapper->setCurrentIndex(qMin(row, model->rowCount() - 1));
+
+    if (model->rowCount() == 0) {
+        QMessageBox::information(this, "Deletion", "Nothing to remove");
+        return;
+    }
+
+    QMessageBox::information(this, "Deletion", "Deletion has been completed.");
+}
+
+void BaseEditForm::clearWidgets()
+{
     foreach (QWidget* widget, widgets) {
         QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
         if (lineEdit) {
@@ -140,14 +163,4 @@ void BaseEditForm::onAddButton()
             continue;
         }
     }
-}
-
-void BaseEditForm::onDeleteButton()
-{
-    int row = mapper->currentIndex();
-    model->removeRow(row);
-    mapper->submit();
-    mapper->setCurrentIndex(qMin(row, model->rowCount() - 1));
-
-    QMessageBox::information(this, "Deletion", "Deletion has been completed.");
 }

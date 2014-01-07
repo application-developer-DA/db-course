@@ -41,6 +41,9 @@ private slots:
     void onAddButton();
     void onDeleteButton();
 
+private:
+    void clearWidgets();
+
 protected:
     QSqlRelationalTableModel* model;
     QDataWidgetMapper* mapper;
