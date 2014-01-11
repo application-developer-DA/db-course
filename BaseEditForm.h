@@ -37,6 +37,10 @@ public:
 
     void done(int result);
 
+signals:
+    void afterAddPressed();
+    void afterDeletePressed();
+
 private slots:
     void onAddButton();
     void onDeleteButton();

@@ -127,6 +127,7 @@ void BaseEditForm::onAddButton()
     mapper->setCurrentIndex(row);
 
     clearWidgets();
+    emit afterAddPressed();
 }
 
 void BaseEditForm::onDeleteButton()
@@ -142,6 +143,7 @@ void BaseEditForm::onDeleteButton()
     }
 
     QMessageBox::information(this, "Deletion", "Deletion has been completed.");
+    emit afterDeletePressed();
 }
 
 void BaseEditForm::clearWidgets()

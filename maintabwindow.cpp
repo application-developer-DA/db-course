@@ -79,6 +79,7 @@ void MainTabWindow::on_addSportBtn_clicked()
     form.exec();
 
     sportsModel->select();
+
     // connect(ui->sportsView, &QTableView::entered, [=]() { sportsModel->select(); });
 }
 
@@ -88,18 +89,18 @@ void MainTabWindow::on_deleteSportBtn_clicked()
     if (!index.isValid())
         return;
 
-    QSqlDatabase::database().transaction();
+    // QSqlDatabase::database().transaction();
     QSqlRecord record = sportsModel->record(index.row());
     QString name = record.value(Sport_Name).toString();
     int r = QMessageBox::warning(this, tr("Delete Sport"), tr("Delete %1 and all connected tables?").arg(name),
                                  QMessageBox::Yes | QMessageBox::No);
     if (r == QMessageBox::No) {
-        QSqlDatabase::database().rollback();
+        // QSqlDatabase::database().rollback();
         return;
     }
     sportsModel->removeRow(index.row());
     sportsModel->submitAll();
-    QSqlDatabase::database().commit();
+    // QSqlDatabase::database().commit();
 
     updateSportCoachesView();
     ui->sportsView->setFocus();
@@ -545,6 +546,9 @@ void MainTabWindow::on_editSportsmanBtn_clicked()
     PersonEditForm form(sportsmanId, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
 
+    QString query = sportsmenModel->query().lastQuery();
+    sportsmenModel->setQuery(query);
+
     updateSportsmanCoachesView();
 }
 
@@ -572,6 +576,9 @@ void MainTabWindow::on_editSportConstructionBtn_clicked()
 
     BaseEditForm form(id, "Building", relations, mappings);
     form.exec();
+
+    QString query = constructionsModel->query().lastQuery();
+    constructionsModel->setQuery(query);
 }
 
 void MainTabWindow::on_organizationEditBtn_clicked()
@@ -590,6 +597,9 @@ void MainTabWindow::on_organizationEditBtn_clicked()
 
     BaseEditForm form(id, "Organization", QVector<BaseEditForm::Relation>(), mappings);
     form.exec();
+
+    QString query = organizationsModel->query().lastQuery();
+    organizationsModel->setQuery(query);
 }
 
 void MainTabWindow::on_sportsmanCoachEditBtn_clicked()
@@ -610,6 +620,9 @@ void MainTabWindow::on_sportsmanCoachEditBtn_clicked()
 
     PersonEditForm form(id, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
+
+    QString query = coachesModel->query().lastQuery();
+    coachesModel->setQuery(query);
 }
 
 void MainTabWindow::on_editClubsBtn_clicked()
@@ -632,6 +645,9 @@ void MainTabWindow::on_editClubsBtn_clicked()
 
     BaseEditForm form(id, "Club", relations, mappings);
     form.exec();
+
+    QString query = competitionsClubs->query().lastQuery();
+    competitionsClubs->setQuery(query);
 }
 
 void MainTabWindow::on_editCompetitionsBtn_clicked()
@@ -657,4 +673,7 @@ void MainTabWindow::on_editCompetitionsBtn_clicked()
 
     CompetitionEditForm form(id, "Competition", relations, mappings);
     form.exec();
+
+    QString query = competitionsModel->query().lastQuery();
+    competitionsModel->setQuery(query);
 }

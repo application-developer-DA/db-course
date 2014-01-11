@@ -69,11 +69,16 @@ PersonEditForm::PersonEditForm(int id, const QString &tableName, const QVector<R
 
     connect(mapper, SIGNAL(currentIndexChanged(int)), SLOT(updateExperienceModel()));
     connect(mapper, SIGNAL(currentIndexChanged(int)), SLOT(updateLearnerModel()));
+
+    connect(this, &BaseEditForm::afterAddPressed, [=]() {
+        experienceModel->setFilter(QString("person_id = -1"));
+    } );
 }
 
 void PersonEditForm::updateExperienceModel()
 {
-    experienceModel->setFilter(QString("person_id = %1").arg(model->record(mapper->currentIndex()).value(0).toInt()));
+    int id = model->record(mapper->currentIndex()).value(0).toInt();
+    experienceModel->setFilter(QString("person_id = %1").arg(id));
     experienceModel->select();
 }
 
@@ -106,13 +111,6 @@ void PersonEditForm::deleteExperience()
 
 void PersonEditForm::editLearner()
 {
-    QModelIndex index = learnerView->currentIndex();
-    int id = -1;
-    if (index.isValid()) {
-        QSqlRecord record = learnerModel->record(index.row());
-        id = record.value(0).toInt();
-    }
-
     QVector<WidgetMapping> mappings {
         { "Coach:",    ComboBox, QVariant("Name"), 1 },
         { "Learner:",  ComboBox, QVariant("Name"), 2 },
@@ -127,6 +125,7 @@ void PersonEditForm::editLearner()
         { 4, QSqlRelation("Club", "id", "name") }
     };
 
+    int id = model->record(mapper->currentIndex()).value(0).toInt();
     BaseEditForm form(id, "Learner", relations, mappings, this);
     form.exec();
 
