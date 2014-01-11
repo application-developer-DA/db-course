@@ -126,7 +126,7 @@ void BaseEditForm::onAddButton()
     model->insertRow(row);
     mapper->setCurrentIndex(row);
 
-    clearWidgets();
+    clearWidgets();    
     emit afterAddPressed();
 }
 

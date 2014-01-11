@@ -111,6 +111,13 @@ void PersonEditForm::deleteExperience()
 
 void PersonEditForm::editLearner()
 {
+    QModelIndex index = learnerView->currentIndex();
+    int id = -1;
+    if (index.isValid()) {
+        QSqlRecord record = learnerModel->record(index.row());
+        id = record.value(0).toInt();
+    }
+
     QVector<WidgetMapping> mappings {
         { "Coach:",    ComboBox, QVariant("Name"), 1 },
         { "Learner:",  ComboBox, QVariant("Name"), 2 },
@@ -125,7 +132,6 @@ void PersonEditForm::editLearner()
         { 4, QSqlRelation("Club", "id", "name") }
     };
 
-    int id = model->record(mapper->currentIndex()).value(0).toInt();
     BaseEditForm form(id, "Learner", relations, mappings, this);
     form.exec();
 

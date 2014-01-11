@@ -206,8 +206,8 @@
             <item>
              <widget class="QRadioButton" name="sportsmenCompetitionFilter">
               <property name="text">
-               <string>Filter by not taking part
-in competitions</string>
+               <string>Filter by not taking
+part in competitions</string>
               </property>
              </widget>
             </item>
@@ -293,8 +293,8 @@ in competitions</string>
              <bool>true</bool>
             </property>
             <property name="text">
-             <string>Those who study multiple
- sports</string>
+             <string>Those who study
+multiple sports</string>
             </property>
            </widget>
           </item>

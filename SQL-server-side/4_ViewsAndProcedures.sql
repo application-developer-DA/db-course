@@ -178,7 +178,7 @@ as
 		SportsmenWithSports.[Firstname],
 		SportsmenWithSports.[Lastname],
 		SportsmenWithSports.[Middlename],
-		COUNT(SportsmenWithSports.Sport) [Sports Count]
+		COUNT(SportsmenWithSports.Sport) AS [Sports Count]
 	from SportsmenWithSports
 	group by SportsmenWithSports.[Person Id], SportsmenWithSports.[Firstname], SportsmenWithSports.[Lastname], SportsmenWithSports.[Middlename]
 	having count(SportsmenWithSports.Sport) > 1
