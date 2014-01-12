@@ -48,6 +48,8 @@ MainTabWindow::MainTabWindow(QWidget* parent)
     , allCoaches(nullptr)
 {
     ui->setupUi(this);
+
+    permissions.write = permissions.execute = permissions.insert = permissions.read = false;
 }
 
 MainTabWindow::~MainTabWindow()
@@ -61,12 +63,47 @@ void MainTabWindow::login()
     while (userQuery.next()) {
         QString userName = userQuery.value(0).toString();
         ui->loginLabel->setText(QString("You logged in as %1").arg(userName));
+        findUserPermissions(userName);
+        break;
     }
+
+    showAddEditButtons(permissions.write);
 
     fillSports();
     fillSportsmen();
     fillConstructionsAndOrganizations();
     fillCompetitions();
+}
+
+void MainTabWindow::findUserPermissions(const QString &userName)
+{
+    auto queryStr = QString("execute as user = '%1' select * from fn_my_permissions(null, 'DATABASE') "
+                            "order by subentity_name, permission_name revert").arg(userName);
+
+    QSqlQuery query;
+    query.exec(queryStr);
+    while (query.next()) {
+        QString permissionName = query.value("permission_name").toString();
+        if (permissionName == "INSERT")
+            permissions.insert = true;
+        else if (permissionName == "EXECUTE")
+            permissions.execute = true;
+        else if (permissionName == "SELECT")
+            permissions.read = true;
+        else if (permissionName == "ALTER")
+            permissions.write = true;
+    }
+}
+
+void MainTabWindow::showAddEditButtons(bool show)
+{
+    ui->addSportBtn->setVisible(show);
+    ui->deleteSportBtn->setVisible(show);
+    ui->editClubsBtn->setVisible(show);
+    ui->editCoachBtn->setVisible(show);
+    ui->editCompetitionsBtn->setVisible(show);
+    ui->editSportConstructionBtn->setVisible(show);
+    ui->editSportsmanBtn->setVisible(show);
 }
 
 void MainTabWindow::on_addSportBtn_clicked()
@@ -119,6 +156,9 @@ void MainTabWindow::fillSports()
     coachesModel = new QSqlQueryModel(this);
     ui->coachesView->setModel(coachesModel);
     setDefaultViewParameters(ui->coachesView);
+
+    if (!permissions.write)
+        ui->sportsView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void MainTabWindow::updateSportCoachesView()

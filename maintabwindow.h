@@ -74,12 +74,17 @@ private slots:
     void applyCompetitionOrganizerFilter();
     void applyCompetitionDateFilter();
 
-    void lol()
-    {
-        qDebug() << "lol";
-    }
-
 private:
+    struct UserPermissions {
+        bool read      : 1;
+        bool insert    : 1;
+        bool write     : 1;
+        bool execute   : 1;
+    } permissions;
+
+    void findUserPermissions(const QString& userName);
+    void showAddEditButtons(bool show);
+
     /* Tabs filling functions */
     void fillSports();                           // Configure 1 tab
     void fillSportsmen();                        // Configure 2 tab
