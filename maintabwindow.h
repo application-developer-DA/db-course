@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <QDebug>
 #include <QList>
 #include <QWidget>
 
@@ -12,6 +13,7 @@ class MainTabWindow;
 class QSqlTableModel;
 class QSqlQueryModel;
 class QSqlRelationalTableModel;
+class QTableView;
 
 class MainTabWindow : public QWidget
 {
@@ -72,12 +74,19 @@ private slots:
     void applyCompetitionOrganizerFilter();
     void applyCompetitionDateFilter();
 
+    void lol()
+    {
+        qDebug() << "lol";
+    }
+
 private:
     /* Tabs filling functions */
     void fillSports();                           // Configure 1 tab
     void fillSportsmen();                        // Configure 2 tab
     void fillConstructionsAndOrganizations();    // Configure 3 tab
     void fillCompetitions();                     // Configure 4 tab
+
+    void setDefaultViewParameters(QTableView* view);
 
     QList<QWidget*> competitionFilterWidgets;
     QList<QWidget*> constructionFilterWidgets;
@@ -100,5 +109,9 @@ private:
 
     /* Auxiliary models */
     QSqlQueryModel* allCoaches;
+    QSqlQueryModel* experienceModel;
+    QSqlQueryModel* constructionType;
+    QSqlQueryModel* constructions;
+    QSqlQueryModel* organizers;
 };
 

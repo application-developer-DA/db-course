@@ -16,14 +16,23 @@ enum {
 static const QString kAllSportsmenQuery           = "SELECT id AS Id, firstname AS Firstname, lastname AS Lastname, middlename AS Middlename, birthdate AS Birthdate FROM Person";
 static const QString kAllSportConstructionsQuery  = "SELECT [Building Id], [Building Name], [Competition Name], [Sport Name], [Organization Name] FROM AllCompetitions";
 static const QString kAllCompetitionsQuery        = "SELECT [Competition Id], [Competition Name], [Competition Date], [Sport Name], [Building Name], [Organization Name] FROM AllCompetitions";
+static const QString kAllCompetitionOrganizations = "SELECT [Organization Id], [Organization Name], [Competition Name], [Sport Name] FROM AllCompetitions";
+static const QString kAllCoachesNames             = "SELECT DISTINCT [Coach Firstname] + ' ' + [Coach Lastname] + ' ' + [Coach Middlename] AS Coach FROM SportsmenWithCoaches";
 
-static inline void setDefaultViewParameters(QTableView* view)
+static inline int getFirstRecordId(QTableView* view, QSqlQueryModel* model)
 {
-    view->setColumnHidden(0, true);
-    view->setSelectionMode(QAbstractItemView::SingleSelection);
-    view->setSelectionBehavior(QAbstractItemView::SelectRows);
-    view->horizontalHeader()->setStretchLastSection(true);
-    view->resizeColumnsToContents();
+    int id = -1;
+    QModelIndex index = view->currentIndex();
+    if (index.isValid()) {
+        QSqlRecord record = model->record(index.row());
+        id = record.value(0).toInt();
+    }
+    return id;
+}
+
+static inline void updateModel(QSqlQueryModel* model)
+{
+    model->setQuery(model->query().lastQuery());
 }
 
 MainTabWindow::MainTabWindow(QWidget* parent)
@@ -55,8 +64,6 @@ void MainTabWindow::login()
     }
 
     fillSports();
-    ui->sportsView->setCurrentIndex(sportsModel->index(0, 0));
-
     fillSportsmen();
     fillConstructionsAndOrganizations();
     fillCompetitions();
@@ -68,13 +75,7 @@ void MainTabWindow::on_addSportBtn_clicked()
         { "Sport Name:", BaseEditForm::LineEdit, QVariant(), 1 }
     };
 
-    int id = -1;
-    QModelIndex index = ui->sportsView->currentIndex();
-    if (index.isValid()) {
-        QSqlRecord record = sportsModel->record(index.row());
-        id = record.value(0).toInt();
-    }
-
+    int id = getFirstRecordId(ui->sportsView, sportsModel);
     BaseEditForm form(id, "Sport", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
 
@@ -87,18 +88,15 @@ void MainTabWindow::on_deleteSportBtn_clicked()
     if (!index.isValid())
         return;
 
-    // QSqlDatabase::database().transaction();
     QSqlRecord record = sportsModel->record(index.row());
     QString name = record.value(Sport_Name).toString();
     int r = QMessageBox::warning(this, tr("Delete Sport"), tr("Delete %1 and all connected tables?").arg(name),
                                  QMessageBox::Yes | QMessageBox::No);
-    if (r == QMessageBox::No) {
-        // QSqlDatabase::database().rollback();
+    if (r == QMessageBox::No)
         return;
-    }
+
     sportsModel->removeRow(index.row());
     sportsModel->submitAll();
-    // QSqlDatabase::database().commit();
 
     updateSportCoachesView();
     ui->sportsView->setFocus();
@@ -121,7 +119,6 @@ void MainTabWindow::fillSports()
     coachesModel = new QSqlQueryModel(this);
     ui->coachesView->setModel(coachesModel);
     setDefaultViewParameters(ui->coachesView);
-    ui->coachesView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void MainTabWindow::updateSportCoachesView()
@@ -132,7 +129,6 @@ void MainTabWindow::updateSportCoachesView()
         QString sportName = record.value(Sport_Name).toString();
 
         coachesModel->setQuery(QString("EXEC CoachesSport @sportName = '%1'").arg(sportName));
-        setDefaultViewParameters(ui->coachesView);
     }
 }
 
@@ -147,29 +143,19 @@ void MainTabWindow::fillSportsmen()
             SLOT(updateSportsmanCoachesView()));
 
     sportsmanCoachesModel = new QSqlQueryModel();
-    QSqlRecord record = sportsmenModel->record(ui->sportsmenView->currentIndex().row());
-    QString query = QString("EXEC CoachesOfSportsman @firstname = '%1', @lastname = '%2', @middlename = '%3'")
-            .arg(record.value("Firstname").toString())
-            .arg(record.value("Lastname").toString())
-            .arg(record.value("Middlename").toString());
-    sportsmanCoachesModel->setQuery(query);
     ui->sportsmanCoachesView->setModel(sportsmanCoachesModel);
     setDefaultViewParameters(ui->sportsmanCoachesView);
+
+    experienceModel = new QSqlQueryModel(this);
+    ui->sportsmenQualificationCombobox->setModel(experienceModel);
+    connect(ui->sportsmenQualificationCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanQualificationFilter()));
 
     ui->sportsmenSportCombobox->setModel(sportsModel);
     ui->sportsmenSportCombobox->setModelColumn(Sport_Name);
     connect(ui->sportsmenSportCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanSportFilter()));
 
-    QSqlQueryModel* experienceModel = new QSqlQueryModel(this);
-    experienceModel->setQuery("SELECT DISTINCT title FROM Experience");
-    ui->sportsmenQualificationCombobox->setModel(experienceModel);
-    ui->sportsmenQualificationCombobox->setModelColumn(0);
-    connect(ui->sportsmenQualificationCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanQualificationFilter()));
-
     allCoaches = new QSqlQueryModel(this);
-    allCoaches->setQuery("SELECT DISTINCT [Coach Firstname] + ' ' + [Coach Lastname] + ' ' + [Coach Middlename] AS Coach FROM SportsmenWithCoaches");
     ui->sportsmenCoachCombobox->setModel(allCoaches);
-    ui->sportsmenCoachCombobox->setModelColumn(0);
     connect(ui->sportsmenCoachCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applySportsmanCoachFilter()));
 
     QDate today = QDate::currentDate();
@@ -206,21 +192,19 @@ void MainTabWindow::fillConstructionsAndOrganizations()
 {
     constructionsModel = new QSqlQueryModel(this);
     constructionsModel->setQuery(kAllSportConstructionsQuery);
-
     ui->buildingsView->setModel(constructionsModel);
     setDefaultViewParameters(ui->buildingsView);
 
     organizationsModel = new QSqlQueryModel(this);
-    organizationsModel->setQuery("SELECT [Organization Id], [Organization Name], [Competition Name], [Sport Name] FROM AllCompetitions");
-
+    organizationsModel->setQuery(kAllCompetitionOrganizations);
     ui->organizationsView->setModel(organizationsModel);
     setDefaultViewParameters(ui->organizationsView);
 
-    QSqlQueryModel* constructionType = new QSqlQueryModel(this);
-    constructionType->setQuery("SELECT DISTINCT building_type FROM Building");
+    constructionType = new QSqlQueryModel(this);
     ui->constructionTypeFilterCombobox->setModel(constructionType);
-    ui->constructionPlacesFilterEdit->setValidator(new QIntValidator(1, 9999, this));
     connect(ui->constructionTypeFilterCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applyConstructionTypeFilter()));
+
+    ui->constructionPlacesFilterEdit->setValidator(new QIntValidator(1, 9999, this));
     connect(ui->constructionPlacesFilterEdit, SIGNAL(editingFinished()), SLOT(applyConstructionPlacesFilter()));
 
     QDate today = QDate::currentDate();
@@ -242,7 +226,6 @@ void MainTabWindow::fillCompetitions()
 {
     competitionsModel = new QSqlQueryModel(this);
     competitionsModel->setQuery(kAllCompetitionsQuery);
-
     ui->competitionsView->setModel(competitionsModel);
     setDefaultViewParameters(ui->competitionsView);
 
@@ -257,13 +240,11 @@ void MainTabWindow::fillCompetitions()
     ui->clubsView->setModel(competitionsClubs);
     setDefaultViewParameters(ui->clubsView);
 
-    QSqlQueryModel* constructions = new QSqlQueryModel(this);
-    constructions->setQuery("SELECT name FROM Building");
+    constructions = new QSqlQueryModel(this);
     ui->competitionConstructionFilterCombobox->setModel(constructions);
     connect(ui->competitionConstructionFilterCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applyCompetitionConstructionFilter()));
 
-    QSqlQueryModel* organizers = new QSqlQueryModel(this);
-    organizers->setQuery("SELECT name FROM Organization");
+    organizers = new QSqlQueryModel(this);
     ui->competitionOrganizersCombobox->setModel(organizers);
     connect(ui->competitionOrganizersCombobox, SIGNAL(currentIndexChanged(int)), SLOT(applyCompetitionOrganizerFilter()));
 
@@ -292,25 +273,29 @@ void MainTabWindow::updateWinnersView()
     QModelIndex index = ui->competitionsView->currentIndex();
     if (index.isValid()) {
         QSqlRecord record = competitionsModel->record(index.row());
-
         competitionWinnersModel->setQuery(QString("EXEC CompetitionWinners @competitionName = '%1'")
                                         .arg(record.value("Competition Name").toString()));
-        setDefaultViewParameters(ui->winnersView);
     }
 }
 
 void MainTabWindow::applySportsmanSportFilter()
 {
+    if (!ui->sportsmenSportFilter->isChecked())
+        return;
     QString sportName = ui->sportsmenSportCombobox->currentText();
     sportsmenModel->setQuery(QString("EXEC SportsmenWithParticularSport @sportName = '%1'").arg(sportName));
 }
 
 void MainTabWindow::applySportsmanCoachFilter()
 {
+    if (!ui->sportsmenCoachFilter->isChecked())
+        return;
     QString record = ui->sportsmenCoachCombobox->currentText();
-    qDebug() << record;
-    QStringList coach = record.split(' ');
 
+    if (record.isNull() || record.isEmpty())
+        return;
+
+    QStringList coach = record.split(' ');
     Q_ASSERT(coach.size() == 3);
     sportsmenModel->setQuery(QString("EXEC SportsmenOfCoach @firstname = '%1', @lastname = '%2', @middlename = '%3'")
                              .arg(coach[0]).arg(coach[1]).arg(coach[2]));
@@ -318,6 +303,8 @@ void MainTabWindow::applySportsmanCoachFilter()
 
 void MainTabWindow::applySportsmanQualificationFilter()
 {
+    if (!ui->sportsmenQualificationFilter->isChecked())
+        return;
     QString title = ui->sportsmenQualificationCombobox->currentText();
     sportsmenModel->setQuery(QString("EXEC SportsmenWithQualification @sportTitle = '%1'").arg(title));
 }
@@ -339,6 +326,8 @@ void MainTabWindow::applyConstructionPlacesFilter()
 
 void MainTabWindow::applyConstructionTypeFilter()
 {
+    if (!ui->constructionTypeFilter->isChecked())
+        return;
     constructionsModel->setQuery(QString("EXEC BuildingByType @buildingType = '%1'").arg(ui->constructionTypeFilterCombobox->currentText()));
 }
 
@@ -356,18 +345,24 @@ void MainTabWindow::applyConstructionCompetitionFilter()
 
 void MainTabWindow::applyCompetitionConstructionFilter()
 {
+    if (!ui->competitionConstructionFilter->isChecked())
+        return;
     QString constructionName = ui->competitionConstructionFilterCombobox->currentText();
     competitionsModel->setQuery(QString("EXEC CompetitionsInBuilding @buildingName = '%1'").arg(constructionName));
 }
 
 void MainTabWindow::applyCompetitionOrganizerFilter()
 {
+    if (!ui->competitionOrganizerFilter->isChecked())
+        return;
     QString organizationName = ui->competitionOrganizersCombobox->currentText();
     competitionsModel->setQuery(QString("EXEC CompetitionsByOrganization @organizationName = '%1'").arg(organizationName));
 }
 
 void MainTabWindow::applyCompetitionSportFilter()
 {
+    if (!ui->competitionSportFilter->isChecked())
+        return;
     QString sport = ui->competitionSportFilterCombobox->currentText();
     competitionsModel->setQuery(QString("EXEC CompetitionsSport @sportName = '%1'").arg(sport));
 }
@@ -395,23 +390,25 @@ void MainTabWindow::on_enableSportsmenFilters_stateChanged(int state)
 
 void MainTabWindow::on_sportsmenSportFilter_toggled(bool checked)
 {
-    if (checked)
-        applySportsmanSportFilter();
+    applySportsmanSportFilter();
     ui->sportsmenSportCombobox->setEnabled(checked);
 }
 
 void MainTabWindow::on_sportsmenQualificationFilter_toggled(bool checked)
 {
     if (checked)
-        applySportsmanQualificationFilter();
+        experienceModel->setQuery("SELECT DISTINCT title FROM Experience");
     ui->sportsmenQualificationCombobox->setEnabled(checked);
+    applySportsmanQualificationFilter();
 }
 
 void MainTabWindow::on_sportsmenCoachFilter_toggled(bool checked)
 {
-    if (checked)
-        applySportsmanCoachFilter();
+    if (checked) {
+        allCoaches->setQuery(kAllCoachesNames);
+    }
     ui->sportsmenCoachCombobox->setEnabled(checked);
+    applySportsmanCoachFilter();
 }
 
 void MainTabWindow::on_sportsmenCompetitionFilter_toggled(bool checked)
@@ -438,8 +435,9 @@ void MainTabWindow::on_enableBuildingFilters_stateChanged(int state)
 void MainTabWindow::on_constructionTypeFilter_toggled(bool checked)
 {
     if (checked)
-        applyConstructionTypeFilter();
+        constructionType->setQuery("SELECT DISTINCT building_type FROM Building");
     ui->constructionTypeFilterCombobox->setEnabled(checked);
+    applyConstructionTypeFilter();
 }
 
 void MainTabWindow::on_constructionPlacesFilter_toggled(bool checked)
@@ -477,33 +475,27 @@ void MainTabWindow::on_competitionDateFilter_toggled(bool checked)
 void MainTabWindow::on_competitionOrganizerFilter_toggled(bool checked)
 {
     if (checked)
-        applyCompetitionOrganizerFilter();
+        organizers->setQuery("SELECT name FROM Organization");
     ui->competitionOrganizersCombobox->setEnabled(checked);
+    applyCompetitionOrganizerFilter();
 }
 
 void MainTabWindow::on_competitionSportFilter_toggled(bool checked)
 {
-    if (checked)
-        applyCompetitionSportFilter();
     ui->competitionSportFilterCombobox->setEnabled(checked);
+    applyCompetitionSportFilter();
 }
 
 void MainTabWindow::on_competitionConstructionFilter_toggled(bool checked)
 {
     if (checked)
-        applyCompetitionConstructionFilter();
+        constructions->setQuery("SELECT name FROM Building");
     ui->competitionConstructionFilterCombobox->setEnabled(checked);
+    applyCompetitionConstructionFilter();
 }
 
 void MainTabWindow::on_editCoachBtn_clicked()
 {
-    int coachId = -1;
-    QModelIndex index = ui->coachesView->currentIndex();
-    if (index.isValid()) {
-        QSqlRecord record = coachesModel->record(index.row());
-        coachId = record.value(0).toInt();
-    }
-
     QVector<BaseEditForm::WidgetMapping> mappings {
         { "Firstname",  BaseEditForm::LineEdit, QVariant(), 1 },
         { "Lastname",   BaseEditForm::LineEdit, QVariant(), 2 },
@@ -511,22 +503,15 @@ void MainTabWindow::on_editCoachBtn_clicked()
         { "Birthdate",  BaseEditForm::DateEdit, QVariant(), 4 }
     };
 
-    PersonEditForm form(coachId, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
+    int id = getFirstRecordId(ui->coachesView, coachesModel);
+    PersonEditForm form(id, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
 
     updateSportCoachesView();
-    allCoaches->setQuery(allCoaches->query().lastQuery());
 }
 
 void MainTabWindow::on_editSportsmanBtn_clicked()
 {
-    int sportsmanId = -1;
-    QModelIndex index = ui->sportsmenView->currentIndex();
-    if (index.isValid()) {
-        QSqlRecord record = sportsmenModel->record(index.row());
-        sportsmanId = record.value(0).toInt();
-    }
-
     QVector<BaseEditForm::WidgetMapping> mappings {
         { "Firstname",  BaseEditForm::LineEdit, QVariant(), 1 },
         { "Lastname",   BaseEditForm::LineEdit, QVariant(), 2 },
@@ -534,15 +519,11 @@ void MainTabWindow::on_editSportsmanBtn_clicked()
         { "Birthdate",  BaseEditForm::DateEdit, QVariant(), 4 }
     };
 
-    PersonEditForm form(sportsmanId, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
+    int id = getFirstRecordId(ui->sportsmenView, sportsmenModel);
+    PersonEditForm form(id, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
 
-    QString query = sportsmenModel->query().lastQuery();
-    sportsmenModel->setQuery(query);
-    ui->sportsmenCoachCombobox->blockSignals(true);
-    allCoaches->setQuery(allCoaches->query().lastQuery());
-    ui->sportsmenCoachCombobox->blockSignals(false);
-
+    updateModel(sportsmenModel);
     updateSportsmanCoachesView();
 }
 
@@ -561,18 +542,11 @@ void MainTabWindow::on_editSportConstructionBtn_clicked()
         { 1, QSqlRelation("Organization", "id", "name") }
     };
 
-    QModelIndex index = ui->buildingsView->currentIndex();
-    int id = -1;
-    if (index.isValid()) {
-        QSqlRecord record = constructionsModel->record(index.row());
-        id = record.value(0).toInt();
-    }
-
+    int id = getFirstRecordId(ui->buildingsView, constructionsModel);
     BaseEditForm form(id, "Building", relations, mappings);
     form.exec();
 
-    QString query = constructionsModel->query().lastQuery();
-    constructionsModel->setQuery(query);
+    updateModel(constructionsModel);
 }
 
 void MainTabWindow::on_organizationEditBtn_clicked()
@@ -582,29 +556,15 @@ void MainTabWindow::on_organizationEditBtn_clicked()
         { "Address:", BaseEditForm::LineEdit, QVariant(), 2 }
     };
 
-    QModelIndex index = ui->organizationsView->currentIndex();
-    int id = -1;
-    if (index.isValid()) {
-        QSqlRecord record = organizationsModel->record(index.row());
-        id = record.value(0).toInt();
-    }
-
+    int id = getFirstRecordId(ui->organizationsView, organizationsModel);
     BaseEditForm form(id, "Organization", QVector<BaseEditForm::Relation>(), mappings);
     form.exec();
 
-    QString query = organizationsModel->query().lastQuery();
-    organizationsModel->setQuery(query);
+    updateModel(organizationsModel);
 }
 
 void MainTabWindow::on_sportsmanCoachEditBtn_clicked()
 {
-    QModelIndex index = ui->sportsmanCoachesView->currentIndex();
-    int id = -1;
-    if (index.isValid()) {
-        QSqlRecord record = sportsmanCoachesModel->record(index.row());
-        id = record.value(0).toInt();
-    }
-
     QVector<BaseEditForm::WidgetMapping> mappings {
         { "Firstname",  BaseEditForm::LineEdit, QVariant(), 1 },
         { "Lastname",   BaseEditForm::LineEdit, QVariant(), 2 },
@@ -612,22 +572,15 @@ void MainTabWindow::on_sportsmanCoachEditBtn_clicked()
         { "Birthdate",  BaseEditForm::DateEdit, QVariant(), 4 }
     };
 
+    int id = getFirstRecordId(ui->sportsmanCoachesView, sportsmanCoachesModel);
     PersonEditForm form(id, "Person", QVector<BaseEditForm::Relation>(), mappings, this);
     form.exec();
 
-    QString query = coachesModel->query().lastQuery();
-    coachesModel->setQuery(query);
+    updateModel(coachesModel);
 }
 
 void MainTabWindow::on_editClubsBtn_clicked()
 {
-    QModelIndex index = ui->clubsView->currentIndex();
-    int id = -1;
-    if (index.isValid()) {
-        QSqlRecord record = competitionsClubs->record(index.row());
-        id = record.value(0).toInt();
-    }
-
     QVector<BaseEditForm::WidgetMapping> mappings {
         { "Organization Name:", BaseEditForm::ComboBox, QVariant("name"), 1 },
         { "Name:",              BaseEditForm::LineEdit, QVariant(),       2 }
@@ -637,22 +590,15 @@ void MainTabWindow::on_editClubsBtn_clicked()
         { 1, QSqlRelation("Organization", "id", "name") }
     };
 
+    int id = getFirstRecordId(ui->clubsView, competitionsClubs);
     BaseEditForm form(id, "Club", relations, mappings);
     form.exec();
 
-    QString query = competitionsClubs->query().lastQuery();
-    competitionsClubs->setQuery(query);
+    updateModel(competitionsClubs);
 }
 
 void MainTabWindow::on_editCompetitionsBtn_clicked()
 {
-    QModelIndex index = ui->competitionsView->currentIndex();
-    int id = -1;
-    if (index.isValid()) {
-        QSqlRecord record = competitionsModel->record(index.row());
-        id = record.value(0).toInt();
-    }
-
     QVector<BaseEditForm::WidgetMapping> mappings {
         { "SportConstruction:", BaseEditForm::ComboBox, QVariant("name"), 1 },
         { "Sport:",             BaseEditForm::ComboBox, QVariant("name"), 2 },
@@ -665,9 +611,26 @@ void MainTabWindow::on_editCompetitionsBtn_clicked()
         { 2, QSqlRelation("Sport", "id", "name") }
     };
 
+    int id = getFirstRecordId(ui->competitionsView, competitionsModel);
     CompetitionEditForm form(id, "Competition", relations, mappings);
     form.exec();
 
-    QString query = competitionsModel->query().lastQuery();
-    competitionsModel->setQuery(query);
+    updateModel(competitionsModel);
+}
+
+void MainTabWindow::setDefaultViewParameters(QTableView* view)
+{
+    view->setColumnHidden(0, true);
+    view->setSelectionMode(QAbstractItemView::SingleSelection);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->horizontalHeader()->setStretchLastSection(true);
+    view->resizeColumnsToContents();
+
+    connect(view->model(), &QAbstractItemModel::modelReset, [=]() {
+        QString header = view->model()->headerData(0, Qt::Horizontal).toString();
+        if (header.indexOf("Id") >= 0)
+            view->setColumnHidden(0, true);
+        view->resizeColumnsToContents();
+        view->horizontalHeader()->setStretchLastSection(true);
+    } );
 }
