@@ -142,7 +142,6 @@ void MainTabWindow::fillSportsmen()
 {
     sportsmenModel = new QSqlQueryModel(this);
     sportsmenModel->setQuery(kAllSportsmenQuery);
-
     ui->sportsmenView->setModel(sportsmenModel);
     setDefaultViewParameters(ui->sportsmenView);
 
@@ -150,6 +149,12 @@ void MainTabWindow::fillSportsmen()
             SLOT(updateSportsmanCoachesView()));
 
     sportsmanCoachesModel = new QSqlQueryModel();
+    QSqlRecord record = sportsmenModel->record(ui->sportsmenView->currentIndex().row());
+    QString query = QString("EXEC CoachesOfSportsman @firstname = '%1', @lastname = '%2', @middlename = '%3'")
+            .arg(record.value("Firstname").toString())
+            .arg(record.value("Lastname").toString())
+            .arg(record.value("Middlename").toString());
+    sportsmanCoachesModel->setQuery(query);
     ui->sportsmanCoachesView->setModel(sportsmanCoachesModel);
     setDefaultViewParameters(ui->sportsmanCoachesView);
 
