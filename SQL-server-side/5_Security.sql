@@ -58,3 +58,17 @@ go
 
 select * from Club
 go
+
+
+/* Create a new role for executing stored
+   procedures */
+CREATE ROLE db_executor
+
+ 
+/* Grant stored procedure execute rights
+   to the role */
+GRANT EXECUTE TO db_executor
+
+ 
+/* Add a user to the db_executor role */
+ALTER ROLE db_executor ADD MEMBER User

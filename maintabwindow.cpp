@@ -79,8 +79,6 @@ void MainTabWindow::on_addSportBtn_clicked()
     form.exec();
 
     sportsModel->select();
-
-    // connect(ui->sportsView, &QTableView::entered, [=]() { sportsModel->select(); });
 }
 
 void MainTabWindow::on_deleteSportBtn_clicked()
@@ -310,6 +308,7 @@ void MainTabWindow::applySportsmanSportFilter()
 void MainTabWindow::applySportsmanCoachFilter()
 {
     QString record = ui->sportsmenCoachCombobox->currentText();
+    qDebug() << record;
     QStringList coach = record.split(' ');
 
     Q_ASSERT(coach.size() == 3);
@@ -516,9 +515,7 @@ void MainTabWindow::on_editCoachBtn_clicked()
     form.exec();
 
     updateSportCoachesView();
-    ui->sportsmenCoachCombobox->blockSignals(true);
     allCoaches->setQuery(allCoaches->query().lastQuery());
-    ui->sportsmenCoachCombobox->blockSignals(false);
 }
 
 void MainTabWindow::on_editSportsmanBtn_clicked()
@@ -542,7 +539,9 @@ void MainTabWindow::on_editSportsmanBtn_clicked()
 
     QString query = sportsmenModel->query().lastQuery();
     sportsmenModel->setQuery(query);
+    ui->sportsmenCoachCombobox->blockSignals(true);
     allCoaches->setQuery(allCoaches->query().lastQuery());
+    ui->sportsmenCoachCombobox->blockSignals(false);
 
     updateSportsmanCoachesView();
 }
