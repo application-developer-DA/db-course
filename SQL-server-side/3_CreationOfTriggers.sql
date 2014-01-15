@@ -6,41 +6,24 @@ go
 
 create trigger OnAddParticipant
 on Participant
-after insert
+instead of insert
 as
-declare @competitionId int
-declare @experienceId int
-select 
-	@competitionId = inserted.competition_id,
-	@experienceId = inserted.experience_id
-from inserted
-declare @competitionDate date
-	select @competitionDate = Competition.competition_date
-	from Competition
-	where Competition.id = @competitionId
-declare @firstName varchar
-declare @lastName varchar
-declare @middleName varchar
-select 
-	@firstName = SportsmenWithSports.Firstname,
-	@lastName = SportsmenWithSports.Lastname,
-	@middleName = SportsmenWithSports.Middlename
-from
-	SportsmenWithSports
-where SportsmenWithSports.ExperienceId = @experienceId
-if exists(
-	select
-		AllParticipants.Firstname,
-		AllParticipants.Lastname,
-		AllParticipants.Middlename,
-		AllParticipants.[Competiton Date]
-	from
-		AllParticipants
-	where AllParticipants.[Competiton Date] = @competitionDate
-	and AllParticipants.Firstname = @firstName
-	and AllParticipants.Lastname = @lastName
-	and AllParticipants.Middlename = @middleName)
-begin rollback transaction end
+begin
+	declare @competitionId int
+	declare @personId int
+	select @competitionId = inserted.competition_id, @personId = inserted.person_id from inserted
+
+	declare @competitionDate date
+	select @competitionDate = Competition.competition_date from Competition	where Competition.id = @competitionId
+
+	if (exists(select [Person Id], [Competiton Date] from AllParticipants where [Competiton Date] = @competitionDate and [Person Id] = @personId))
+	begin 
+		rollback transaction
+		return
+	end
+
+	insert into Participant (person_id, competition_id, club_id, results) select person_id, competition_id, club_id, results from inserted
+end
 go
 
 create trigger AddCompetition
@@ -50,8 +33,9 @@ as
 begin
 declare @buildingId int
 declare @competitionDate date
-select @buildingId = inserted.building_id, @competitionDate = inserted.competition_date from inserted 
-if exists(select * from Competition where Competition.building_id = @buildingId and Competition.competition_date = @competitionDate)
+declare @competitionId int
+select @buildingId = inserted.building_id, @competitionDate = inserted.competition_date, @competitionId = inserted.id from inserted 
+if exists(select * from Competition where Competition.building_id = @buildingId and Competition.competition_date = @competitionDate and Competition.id <> @competitionId)
 	begin rollback transaction end
 end
 go
@@ -93,7 +77,7 @@ as
 declare @buildingName varchar
 select @buildingName = inserted.name from inserted
 if exists(select * from AllCompetitions 
-	where AllCompetitions.BuildingName = @buildingName
-	and DATEDIFF(DAY, AllCompetitions.CompetitionDate, GETDATE()) <= 7)
+	where [Building Name] = @buildingName
+	and DATEDIFF(DAY, AllCompetitions.[Competition Date], GETDATE()) <= 7)
 begin rollback transaction end
 go

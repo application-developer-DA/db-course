@@ -104,6 +104,8 @@ void MainTabWindow::showAddEditButtons(bool show)
     ui->editCompetitionsBtn->setVisible(show);
     ui->editSportConstructionBtn->setVisible(show);
     ui->editSportsmanBtn->setVisible(show);
+    ui->organizationEditBtn->setVisible(show);
+    ui->sportsmanCoachEditBtn->setVisible(show);
 }
 
 void MainTabWindow::on_addSportBtn_clicked()

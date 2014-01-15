@@ -72,3 +72,20 @@ GRANT EXECUTE TO db_executor
  
 /* Add a user to the db_executor role */
 ALTER ROLE db_executor ADD MEMBER User
+
+
+CREATE ROLE webRole
+GO
+
+CREATE LOGIN webLogin WITH PASSWORD='test'
+GO
+
+CREATE USER webUser FROM LOGIN weblogin
+
+GRANT SELECT ON AllCompetitions TO webRole WITH GRANT OPTION
+GRANT SELECT ON AllParticipants TO webRole WITH GRANT OPTION
+GRANT SELECT ON SportsmenWithSports TO webRole WITH GRANT OPTION
+GRANT SELECT ON SportsmenWithCoaches TO webRole WITH GRANT OPTION
+
+ALTER ROLE webRole ADD MEMBER webUser
+GO
