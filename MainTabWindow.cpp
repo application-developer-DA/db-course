@@ -1,4 +1,4 @@
-#include "ui_maintabwindow.h"
+#include "ui_MainTabWindow.h"
 
 #include "BaseEditForm.h"
 #include "CompetitionEditForm.h"
@@ -84,14 +84,10 @@ void MainTabWindow::findUserPermissions(const QString &userName)
     query.exec(queryStr);
     while (query.next()) {
         QString permissionName = query.value("permission_name").toString();
-        if (permissionName == "INSERT")
-            permissions.insert = true;
-        else if (permissionName == "EXECUTE")
-            permissions.execute = true;
-        else if (permissionName == "SELECT")
-            permissions.read = true;
-        else if (permissionName == "ALTER")
-            permissions.write = true;
+        permissions.insert  = (permissionName == "INSERT");
+        permissions.execute = (permissionName == "EXECUTE");
+        permissions.read    = (permissionName == "SELECT");
+        permissions.write   = (permissionName == "ALTER");
     }
 }
 

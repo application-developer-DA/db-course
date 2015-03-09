@@ -1,4 +1,4 @@
-#include "ui_authorizationform.h"
+#include "ui_AuthorizationForm.h"
 
 #include "AuthorizationForm.h"
 

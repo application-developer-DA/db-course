@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = db-course-desktop-client
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
     AuthorizationForm.cpp \
     MainTabWindow.cpp \
@@ -31,9 +30,9 @@ HEADERS  += \
     CompetitionEditForm.h \
     WaitingWnd.h
 
-FORMS    += mainwindow.ui \
-    authorizationform.ui \
-    maintabwindow.ui
+FORMS    += MainWindow.ui \
+    AuthorizationForm.ui \
+    MainTabWindow.ui
 
 QMAKE_CXXFLAGS += -std=c++11
 
